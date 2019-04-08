@@ -10,4 +10,9 @@ public class ReturnStatement
       super(lineNum);
       this.expression = expression;
    }
+
+   public Expression getExpression() 
+   {
+      return this.expression;
+   }
 }
