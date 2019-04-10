@@ -1,3 +1,6 @@
+import java.util.Stack;
+
+import ast.Declaration;
 import ast.ReturnStatement;
 import ast.StructType;
 import ast.TrueExpression;
@@ -8,18 +11,59 @@ import jdk.jshell.TypeDeclSnippet;
 public class TypeCheckVisitor implements Visitor 
 {
 
-   // Declarations
-   public TypeDeclaration visit(TypeDeclaration x) 
+   Stack<SymbolTable> symTable = new Stack<SymbolTable>(); 
+   Stack<StructTable> structTable = new Stack<StructTable>(); 
+
+   public void visit(Program x)
    {
-      // Store name in table? x.getName();
-      for (Declaration d : x.getFields()) 
+      symTable.add(new SymbolTable());
+      structTable.add(new StructTable());
+
+      for (Type t : x.getTypes()) 
+      {
+         this.visit(t);
+      }
+
+      for (Declaration d : x.getDecls())
       {
          this.visit(d);
       }
 
-      return x;
+      for (Function f : x.getFuncs()) 
+      {
+         this.visit(f);
+      }  
+   }
+
+   public void visit(TypeDeclaration x) 
+   {
+      // Add to Struct table
+      Struct newStruct = new Struct(x.getName());
+
+      for (Declaration d : x.getFields()) 
+      {
+         newStruct.addField(d.getName(), d.getType());
+      }
+
+      structTable.peek().addStruct(newStruct.getName(), newStruct);
+   }
+
+   public void visit(Declaration x)
+   {
+      // Add to symbol table
+      symbTable.peek().addSymbol(x.getName(), new Symbol(x.getType(), x.getName(), 
+        false, false, false));
    }
    
+   public void visit(Function x)
+   {
+      
+   }
+
+
+
+
+
    // Statements
    public WhileStatement visit(WhileStatement x) 
    {
