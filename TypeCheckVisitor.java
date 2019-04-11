@@ -1,6 +1,8 @@
+import java.util.ArrayList;
 import java.util.Stack;
 
 import ast.Declaration;
+import ast.Function;
 import ast.ReturnStatement;
 import ast.StructType;
 import ast.TrueExpression;
@@ -11,8 +13,8 @@ import jdk.jshell.TypeDeclSnippet;
 public class TypeCheckVisitor implements Visitor 
 {
 
-   Stack<SymbolTable> symTable = new Stack<SymbolTable>(); 
-   Stack<StructTable> structTable = new Stack<StructTable>(); 
+   ArrayList<SymbolTable> symTable = new ArrayList<SymbolTable>(); 
+   ArrayList<StructTable> structTable = new ArrayList<StructTable>(); 
 
    public void visit(Program x)
    {
@@ -45,20 +47,43 @@ public class TypeCheckVisitor implements Visitor
          newStruct.addField(d.getName(), d.getType());
       }
 
-      structTable.peek().addStruct(newStruct.getName(), newStruct);
+      structTable.get(structTable.size()-1).addStruct(newStruct.getName(), newStruct);
+   }
+
+   public void visit(List<Declaration> x) 
+   {
+      for (Declaration d : x)
+      {
+         symTable.get(symTable.size()-1).addSymbol(d.getName(), d.getType());
+      }
    }
 
    public void visit(Declaration x)
    {
       // Add to symbol table
-      symbTable.peek().addSymbol(x.getName(), new Symbol(x.getType(), x.getName(), 
-        false, false, false));
+      symbTable.get(symTable.size()-1).addSymbol(x.getName(), 
+         new Symbol(x.getType(), x.getName(), false, false, false));
    }
    
    public void visit(Function x)
    {
-      
+      // Add header information to the symbol table for reference during invokation 
+      symbTable.get(symTable.size() - 1).addSymbol(x.getName(), 
+         new Symbol(new FunctionType(x), x.getName(), false, false, false));
+
+      // Type Check the body of the function
+      // Added new tables to the stack
+      symTable.add(new SymbolTable());
+      structTable.add(new StructTable());
+
+      this.visit(x.getParams());
+      this.visit(x.getLocals());
+      this.visit(x.getBody());
+
+      symTable.remove(symTable.size()-1);
+      structTable.add(structTable.size()-1);
    }
+
 
 
 

@@ -9,15 +9,28 @@ public class SymbolTable
       table = new HashMap<String, Symbol>();
    }
 
-   public addSymbol(String symbolName, Symbol symbolInstance)
+   public void addSymbol(String symbolName, Symbol symbolInstance)
    {
-      table.put(symbolName, symbolInstance);
+      if (table.get(symbolName) == null)
+      {
+         table.put(symbolName, symbolInstance);
+      }
+      else 
+      {
+         System.out.println("Error: Redeclaration of  " + symbolName);
+      }
    }
 
-   public removeSymbol(String symbolName)
+   public Symbol removeSymbol(String symbolName)
    {
-      table.remove(structName);
+      return table.remove(structName);
+   }
+
+   public Symbol getSymbol(String symbolName)
+   {
+      return table.getSymbol();
    }
 }
+
 
 
