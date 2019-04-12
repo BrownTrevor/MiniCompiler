@@ -21,20 +21,9 @@ public class TypeCheckVisitor implements Visitor
       symTables.add(new SymbolTable());
       structTables.add(new StructTable());
 
-      for (Type t : x.getTypes()) 
-      {
-         this.visit(t);
-      }
-
-      for (Declaration d : x.getDecls())
-      {
-         this.visit(d);
-      }
-
-      for (Function f : x.getFuncs()) 
-      {
-         this.visit(f);
-      }  
+      this.visitList(x.getTypes());
+      this.visitList(x.getDecls());
+      this.visitList(x.getFuncs());
    }
 
    public void visit(TypeDeclaration x) 
@@ -50,16 +39,11 @@ public class TypeCheckVisitor implements Visitor
       structTables.get(structTable.size()-1).addStruct(newStruct.getName(), newStruct);
    }
 
-   /*
-    * Don't think this is needed?
-      public void visit(List<Declaration> x) 
-      {
-         for (Declaration d : x)
-         {
-            symTable.get(symTable.size()-1).addSymbol(d.getName(), d.getType());
-         }
+   private void visitList(List<TypeDeclaration> lx) {
+      for (TypeDeclaration x : lx) {
+         this.visit(x);
       }
-   */
+   }
 
    public void visit(Declaration x)
    {
@@ -70,6 +54,12 @@ public class TypeCheckVisitor implements Visitor
       Symbol newSymbol = new Symbol(x.getType(), x.getName(), isStatic, isMutable, isPrivate);
 
       symTables.get(symTable.size()-1).addSymbol(x.getName(), newSymbol);
+   }
+
+   private void visitList(List<Declaration> lx) {
+      for (Declaration d : lx) {
+         this.visit(d);
+      }
    }
    
    public void visit(Function x)
@@ -87,14 +77,19 @@ public class TypeCheckVisitor implements Visitor
       //Add new symTable for this function's scope
       symTable.add(new SymbolTable());
 
-      this.visit(x.getParams());
-      this.visit(x.getLocals());
-      this.visit(x.getBody());
+      this.visitList(x.getParams()); // List<Declaration>
+      this.visitList(x.getLocals()); // List<Declaration>
+      this.visit(x.getBody()); // Statement
 
       //Remove the symTable for this function's scope
       symTable.remove(symTable.size()-1);
    }
 
+   private void visitList(List<Function> lx) {
+      for (Function x : lx) {
+         this.visit(x);
+      }
+   }
 
 
 
