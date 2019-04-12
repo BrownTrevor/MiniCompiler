@@ -9,7 +9,7 @@ public class StructTable
       table = new HashMap<String, Struct>();
    }
 
-   public addStruct(String structName, Struct structInstance)
+   public void addStruct(String structName, Struct structInstance)
    {
       if (table.get(structName) == null)
       {
@@ -21,7 +21,7 @@ public class StructTable
       }
    }
 
-   public removeStruct(String structName)
+   public void removeStruct(String structName)
    {
       if(table.remove(structName) == null) {
          System.err.println("Error: Struct " + s + " does not exist.");

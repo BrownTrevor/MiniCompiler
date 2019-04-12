@@ -151,10 +151,7 @@ public class TypeCheckVisitor implements Visitor
       Lvalue target = x.getLValue();
       Expression source = x.getSource();
 
-      if(!(this.visit(target) instanceof this.visit(source))) {
-         System.out.println("Target: " + target.getId() + " type does not equal source type");
-         System.exit(1);
-      }
+      this.assertType(this.visit(source), this.visit(target));
    }
 
    /*
