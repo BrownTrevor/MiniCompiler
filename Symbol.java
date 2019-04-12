@@ -15,4 +15,19 @@ public class Symbol
       this.isMutable = isMutable;
       this.isPrivate = isPrivate;
    }
+
+   /**
+    * @return the name
+    */
+   public String getName() {
+      return name;
+   }
+
+   /**
+    * @return the type
+    */
+   public Type getType() {
+      return type;
+   }
+
 }

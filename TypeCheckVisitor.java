@@ -1,13 +1,18 @@
 import java.util.ArrayList;
 import java.util.Stack;
 
+import com.sun.javafx.fxml.expression.BinaryExpression;
+
 import ast.Declaration;
 import ast.Function;
+import ast.LvalueDot;
+import ast.LvalueId;
 import ast.ReturnStatement;
 import ast.StructType;
 import ast.TrueExpression;
 import ast.TypeDeclaration;
 import ast.WhileStatement;
+import javafx.scene.media.MediaException.Type;
 import jdk.jshell.TypeDeclSnippet;
 
 public class TypeCheckVisitor implements Visitor 
@@ -261,8 +266,138 @@ public class TypeCheckVisitor implements Visitor
       return func.type.getRetType();
    }
 
+   public Type visit(LvalueId x)
+   {
+      //Looks up the id of LvalueId in the symbol table
+      return getSymbolFromTables(x.getId()).getType();
+   }
+
+   public Type visit(LvalueDot x)
+   {
+
+   }
 
 
+   public Type visit(BinaryExpression x)  
+   {
+      Type left = this.visit(x.getLeftExpression());
+      Type right = this.visit(x.getRightExpression());
+      Operator o = x.getOperator();
+      
+      switch (o) {
+         case TIMES: 
+            assertType(new IntType(), left);
+            assertType(new IntType(), right);
+            return right;
+            break;
+         case DIVIDE:
+            assertType(new IntType(), left);
+            assertType(new IntType(), right);
+            return right;
+            break;
+         case PLUS:
+            assertType(new IntType(), left);
+            assertType(new IntType(), right);
+            return right;
+            break;
+         case MINUS: 
+            assertType(new IntType(), left);
+            assertType(new IntType(), right);
+            return right;
+            break;
+         case LT:
+            assertType(new IntType(), left);
+            assertType(new IntType(), right);
+            return right;
+            break;
+         case GT:
+            assertType(new IntType(), left);
+            assertType(new IntType(), right);
+            return right;
+            break;
+         case LE:
+            assertType(new IntType(), left);
+            assertType(new IntType(), right);
+            return right;
+            break;
+         case GE:
+            assertType(new IntType(), left);
+            assertType(new IntType(), right);
+            return right;
+            break;
+         case EQ:
+            assertType(left, right);
+            return right;
+            break;
+         case NE:
+            assertType(left, right);
+            return right;
+            break;
+         case AND: 
+            assertType(new BoolType(), left);
+            assertType(new BoolType(), right);
+            return right;
+            break;
+         case OR:
+            assertType(new BoolType(), left);
+            assertType(new BoolType(), right);
+            return right;
+            break;
+         default:
+            System.err.println("Error: Not a binary operator.");
+            exit(1);
+      }
+   }
+
+   public Type visit(NewExpression x)
+   {
+      // Gets a struct from the struct table based of x's id then returns 
+      // the appropriate struct type
+      return new StructType(getStructFromTables(x.getId()));
+   }
+
+   public Type visit(NullExpression x)
+   {
+      return new NullType();
+   }
+
+  
+
+
+   private Symbol getSymbolFromTables(String id)
+   {
+      for (int i = symTables.size()-1; i >= 0; i--)
+      {
+         Symbol symbol = symTables.get(i).get(id);
+         if(symbol)
+         {
+            return symbol;
+         }
+      }
+
+      System.err.println("Error: Identifier " + id + " not found in symbol table.");
+      System.exit(1);
+   }
+
+   private Struct getStructFromTables(String id)
+   {
+      Struct s = structTables.get(structTables.size()-1).getStruct(id)
+      if (s)
+      {
+         return s;
+      }
+
+      System.err.println("Error: Struct " + id + " not found in struct table.");
+      System.exit(1);
+   }
+
+   private void assertType(Type expected, Type actual)
+   {
+      if(!acutal.getClass().equals(expected.getClass()))
+      {
+         System.err.println("Error: Type Mismatch");
+      }
+   }
 
 }
 
