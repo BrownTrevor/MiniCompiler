@@ -1,6 +1,3 @@
-
-
-
 public class Symbol
 {
    public Type type;

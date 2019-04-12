@@ -11,7 +11,14 @@ public class StructTable
 
    public addStruct(String structName, Struct structInstance)
    {
-      table.put(structName, structInstance);
+      if (table.get(structName) == null)
+      {
+         table.put(structName, structInstance);
+      }
+      else 
+      {
+         System.out.println("Error: Redeclaration of struct: " + structName);
+      }
    }
 
    public removeStruct(String structName)

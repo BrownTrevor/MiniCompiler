@@ -17,7 +17,7 @@ public class SymbolTable
       }
       else 
       {
-         System.out.println("Error: Redeclaration of  " + symbolName);
+         System.out.println("Error: Redeclaration of symbol: " + symbolName);
       }
    }
 
