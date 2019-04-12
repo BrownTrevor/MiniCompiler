@@ -67,4 +67,19 @@ public class BinaryExpression
    {
       TIMES, DIVIDE, PLUS, MINUS, LT, GT, LE, GE, EQ, NE, AND, OR
    }
+
+   public Operator getOperator()
+   {
+      return this.operator;
+   }
+
+   public Expression getLeftExpression()
+   {
+      return this.left;
+   }
+
+   public Expression getRightExpression() 
+   {
+      return this.left;
+   }
 }
