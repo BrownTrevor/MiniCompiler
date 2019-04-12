@@ -43,6 +43,11 @@ public class TypeCheckVisitor implements Visitor
       this.visitList(x.getTypes());
       this.visitList(x.getDecls());
       this.visitList(x.getFuncs());
+
+      if(this.getFromSymTables("main") == null) {
+         System.out.println("Must contain main function");
+         exit(1);
+      }
    }
 
    /*
@@ -236,7 +241,12 @@ public class TypeCheckVisitor implements Visitor
     * 3. return the return type of the function
     */
    public Type visit(InvocationStatement x) {
-      InvocationExpression e = x.getExpression();
+      Expression e = x.getExpression();
+
+      if(!(e instanceof InvocationExpression)) {
+         System.out.println("Invocation of function must contain an invocation expression");
+         exit(1);
+      }
 
       String name = e.getName();
       Symbol func = this.getFromSymTables(name);
