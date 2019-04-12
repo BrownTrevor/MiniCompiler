@@ -28,7 +28,7 @@ public class SymbolTable
 
    public Symbol getSymbol(String symbolName)
    {
-      return table.getSymbol();
+      return this.table.get(symbolName);
    }
 }
 
