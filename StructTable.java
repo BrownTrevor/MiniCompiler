@@ -25,5 +25,17 @@ public class StructTable
    {
       table.remove(structName);
    }
+
+   public Struct getStruct(String id)
+   {
+      Struct s = table.get(id);
+      if (s)
+      {
+         return s;
+      }
+
+      System.err.println("Error: Struct " + s + " does not exist.");
+      System.exit(1);
+   }
 }
 
