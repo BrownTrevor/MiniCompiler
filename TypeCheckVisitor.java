@@ -74,14 +74,14 @@ public class TypeCheckVisitor implements Visitor
       // Type Check the body of the function
       // Added new tables to the stack
       symTable.add(new SymbolTable());
-      structTable.add(new StructTable());
+      //structTable.add(new StructTable());
 
       this.visit(x.getParams());
       this.visit(x.getLocals());
       this.visit(x.getBody());
 
       symTable.remove(symTable.size()-1);
-      structTable.add(structTable.size()-1);
+      //structTable.add(structTable.size()-1);
    }
 
 
