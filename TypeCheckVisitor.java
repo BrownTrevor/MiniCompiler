@@ -16,6 +16,17 @@ public class TypeCheckVisitor implements Visitor
    ArrayList<SymbolTable> symTables = new ArrayList<SymbolTable>(); 
    ArrayList<StructTable> structTables = new ArrayList<StructTable>(); 
 
+   private Symbol getFromSymTables(String name) {
+      for(SymbolTable symTable : symTables) {
+         if(symTable.containsKey(name)) {
+            return symTable.get(name);
+         }
+      }
+
+      return null;
+   }
+
+
    public void visit(Program x)
    {
       symTables.add(new SymbolTable());
@@ -121,69 +132,135 @@ public class TypeCheckVisitor implements Visitor
       }
    }
 
+   /*
+    * Logic:
+    * 1. target must be declared in scope; this is accomplished by visit(lvalue)
+    * 1a. this.visit(target) will short-circuit exit if target is not declared in scope,
+    *     and this.visit(source) will not be called
+    * 2. target type must equal type that source evaluates to
+    */
    public void visit(AssignmentStatement x) {
-      Lvalue target = x.getTarget();
+      Lvalue target = x.getLValue();
       Expression source = x.getSource();
 
-      this.visit(target);
-      this.visit(source);
+      if(!(this.visit(target) instanceof this.visit(source))) {
+         System.out.println("Target: " + target.getId() + " type does not equal source type");
+         System.exit(1);
+      }
    }
 
+   /*
+    * Logic:
+    * 1. exp must evaluate to integer
+    */
    public void visit(PrintStatement x) {
       Expression exp = x.getExpression();
 
-      this.visit(exp);
+      if(!(this.visit(exp) instanceof Integer)) {
+         System.out.println("Println requires an integer expression");
+         System.exit(1);
+      }
    }
 
+   /*
+    * Logic:
+    * 1. guard must evaluate to boolean
+    * 2. else block is optional; represented as an empty block statement
+    */
    public void visit(ConditionalStatement x) {
       Expression guard = x.getGuard();
       Statement thenBlock = x.getThenBlock();
       Statement elseBlock = x.getElseBlock();
+
+      if(this.visit(guard) instanceof Boolean) {
+         this.visit(thenBlock);
+         this.visit(elseBlock);
+      }
+      else {
+         System.out.println("Conditional guard expression must evaluate to a boolean");
+         System.exit(1);
+      }
+
    }
 
+   /*
+    * Logic:
+    * 1. guard must evaluate to boolean
+    */
+   public void visit(WhileStatement x) {
+      Expression guard = x.getGuard();
+      Statement body = x.getBody();
 
-
-
-   public WhileStatement visit(WhileStatement x) 
-   {
-      this.visit(x.getBody());
-      this.visit(x.getGuard());
-
-      return x;
+      if(this.visit(guard) instanceof Boolean) {
+         this.visit(body);
+      }
+      else {
+         System.out.println("Loop guard expression must evaluate to a boolean");
+         System.exit(1);
+      }
    }
 
-   public ReturnStatement visit(ReturnStatement x)
-   {
-      this.visit(x.getExpression());
+   public Type visit(DeleteStatement x) {
+      Expression exp = x.getExpression();
+      // TODO: figure out how to deallocate the referenced structure
 
-      return x;
+      return this.visit(exp);
    }
 
-   // Expressions
-   public UnaryExpression visit(UnaryExpression x) 
-   {
-      this.visit(x.getOperator());
-      this.visit(x.getOperand());
+   // TODO: is this correct and full?
+   public Type visit(ReturnStatement x) {
+      Expression exp = x.getExpression();
 
-      return x;
+      return this.visit(exp);
    }
 
-   public TrueExpression visit(TrueExpression x) 
-   {
-      return x;
+   /*
+    * Logic:
+    * 1. name must exist as a function in scope
+    * 2. arguments must be of proper number and type for function invoked
+    * 3. return the return type of the function
+    */
+   public Type visit(InvocationStatement x) {
+      InvocationExpression e = x.getExpression();
+
+      String name = e.getName();
+      Symbol func = this.getFromSymTables(name);
+
+      if(func == null) {
+         System.out.println("Function with name: " + name + " does not exist");
+         exit(1);
+      }
+
+      if(!(func.type instanceof FunctionType)) {
+         System.out.println("Structure with name: " + name + " cannot be invoked");
+         exit(1);
+      }
+
+      List<Expression> arguments = e.getArguments();
+      List<Type> argTypes = this.visitList(arguments); // TODO: make visitList for expressions; return list of evaluated types
+
+      List<Declaration> funcParams = func.type.getParams(); 
+      List<Type> paramTypes = new ArrayList<Type>();
+      for(Declaration param : funcParams) {
+         paramTypes.add(param.getType());
+      }
+
+      if(argTypes.size() != paramTypes.size()) {
+         System.out.println("Function: " + name + " invocation requires: " + paramTypes.size() + " arguments, but was given: " + argTypes.size());
+         exit(1);
+      }
+
+      // TODO: this contains call might not work; must check type of each Type in lists
+      for(Type t : paramTypes) {
+         if(!argTypes.contains(t)) {
+            System.out.println("Function: " + name + " invocation given improper arguments");
+            exit(1);
+         }
+      }
+
+      return func.type.getRetType();
    }
 
-   // Types
-   public VoidType visit(VoidType x) 
-   {
-      return x;
-   }
-
-   public StructType visit(StructType x) 
-   {
-      // Store name in struct table? x.getName();
-      return x;
-   }
 
 
 
