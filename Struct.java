@@ -13,13 +13,23 @@ public class Struct
       fields = new HashMap<String, Type>();
    }
 
-   public addField(String fieldName, Type fieldData)
+   public void addField(String fieldName, Type fieldData)
    {
       fields.put(fieldName, fieldData);
    }
-   public removeField(String fieldName)
+   public void removeField(String fieldName)
    {
       fields.remove(fieldName);
+   }
+
+   public Type getField(String fieldName) {
+      Type t = fields.get(fieldName);
+      if (t) {
+         return t;
+      }
+
+      System.err.println("Error: Field " + t + " does not exist.");
+      System.exit(1);
    }
 
    public String getName() 

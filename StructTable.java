@@ -23,7 +23,10 @@ public class StructTable
 
    public removeStruct(String structName)
    {
-      table.remove(structName);
+      if(table.remove(structName) == null) {
+         System.err.println("Error: Struct " + s + " does not exist.");
+         System.exit(1);
+      }
    }
 
    public Struct getStruct(String id)

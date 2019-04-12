@@ -1,12 +1,15 @@
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.Stack;
 
 import com.sun.javafx.fxml.expression.BinaryExpression;
 
 import ast.Declaration;
+import ast.FalseExpression;
 import ast.Function;
 import ast.LvalueDot;
 import ast.LvalueId;
+import ast.ReadExpression;
 import ast.ReturnStatement;
 import ast.StructType;
 import ast.TrueExpression;
@@ -84,11 +87,6 @@ public class TypeCheckVisitor implements Visitor
       symTables.get(symTables.size()-1).addSymbol(x.getName(), newSymbol);
    }
 
-   private void visitList(List<Declaration> lx) {
-      for (Declaration d : lx) {
-         this.visit(d);
-      }
-   }
    
    /*
     * ----------------------
@@ -204,18 +202,30 @@ public class TypeCheckVisitor implements Visitor
          System.exit(1);
       }
    }
-
-   public Type visit(DeleteStatement x) {
+   
+   /*
+    * Logic: 
+    * 1. Visit the expression and ensure that it results in a struct type
+    * 2. Remove struct from struct table
+    */
+   public void visit(DeleteStatement x) {
       Expression exp = x.getExpression();
-      // TODO: figure out how to deallocate the referenced structure
+      Type t = this.visit(exp);
 
+      if (t instanceof StructType) {
+         structTables.removeStructFromTables(t.getName());
+      }
       return this.visit(exp);
    }
 
-   // TODO: is this correct and full?
+   /*
+    * Logic: 
+    * 1. Visit the expression 
+    * 2. Return the type of the expression for the function to check
+    */
    public Type visit(ReturnStatement x) {
       Expression exp = x.getExpression();
-
+      // Need to talk about this one. It might force us to return NullType on statements 
       return this.visit(exp);
    }
 
@@ -266,14 +276,25 @@ public class TypeCheckVisitor implements Visitor
       return func.type.getRetType();
    }
 
-   public Type visit(LvalueId x)
-   {
+   public Type visit(LvalueId x) {
       //Looks up the id of LvalueId in the symbol table
       return getSymbolFromTables(x.getId()).getType();
    }
 
+   /*
+    * Logic: 
+    * 1. Get a structtype fromt he left side of the dot 
+    * 2. Lookup Struct int the struct table
+    * 3. Lookup the right side of the dot in the struct type
+    * 4. Return its type
+    */
    public Type visit(LvalueDot x)
    {
+      Type leftType = this.visit(x.getLeft());
+      assertType(new StructType(-1, "test"), leftType);
+      Struct struct = getStructFromTables(leftType.getName());
+      
+      return struct.getField(x.getId());
 
    }
 
@@ -349,28 +370,104 @@ public class TypeCheckVisitor implements Visitor
       }
    }
 
-   public Type visit(NewExpression x)
-   {
-      // Gets a struct from the struct table based of x's id then returns 
-      // the appropriate struct type
+   public Type visit(FalseExpression x) {
+      return new BoolType();
+   }
+
+   public Type visit(IdentifierExpression x) {
+      Symbol s = getFromSymTables(x.getId());
+      return s.getType();
+   }
+
+   public Type visit(IntegerExpression x) {
+      return new IntType();
+   }
+
+
+   /*
+    * Logic: 
+    * 1. Lookup the innvocation name in the symbol table and make sure it is
+    *    of type function.
+    * 2. Loop over the argument types in the symbol table and the argument types 
+    *    in the invocation asserting that they are of the same type
+    * 3. Return the return type
+    */
+   public Type visit(InvocationExpression x) {
+      Symbol funcSymbol = getFromSymTables(x.getName());
+      assertType(new FunctionType(), funcSymbol.getType());
+      FunctionType funcDecl = funcSymbol.getType();
+
+
+      Iterator it1 = x.getArguments().iterator();
+      Iterator it2 = funcDecl.getParams().iterator();
+      while(it1.hasNext() && it2.hasNext()) {
+         Type expected = it1.next();
+         Type actual = it2.next();
+         assertType(expected, actual);
+      }
+
+      return funcDecl.getRetType();
+   }
+
+   /*
+    * Logic: 
+    * 1. Lookup struct in the table and assert it exists
+    * 2. Return a new StructType from what was found in the struct table
+    */
+   public Type visit(NewExpression x) {
       return new StructType(getStructFromTables(x.getId()));
    }
 
-   public Type visit(NullExpression x)
-   {
+   /*
+    * Logic: 
+    * 1. Return new NullType
+    */
+   public Type visit(NullExpression x) {
       return new NullType();
    }
 
-  
+   /*
+    * Logic: 
+    * 1. Return new IntType
+    */
+   public Type visit(ReadExpression x) {
+      return new IntType();
+   }
+
+   /*
+    * Logic: 
+    * 1. Return new BooleanType
+    */
+   public Type visit(TrueExpression x) {
+      return new BooleanType();
+   }
+
+   /*
+    * Logic: 
+    * 1. Visit operand and get its type
+    * 2. Match type based off unary cases
+    */
+   public Type visit(UnaryExpression x) {
+      Type operandType = this.visit(x.getOperand());
+      if (x.getOperator() == NOT) {
+         assertType(new BooleanType(), operandType);
+         return operandType;
+      }
+      else if (x.getOperator == MINUS) {
+         assertType(new IntType(), operandType);
+         return operandType;
+      }
+      
+      System.err.println("Error: Not a unary operator.");
+      System.exit(1);
+   }
 
 
-   private Symbol getSymbolFromTables(String id)
-   {
-      for (int i = symTables.size()-1; i >= 0; i--)
-      {
+
+   private Symbol getSymbolFromTables(String id) {
+      for (int i = symTables.size()-1; i >= 0; i--) {
          Symbol symbol = symTables.get(i).get(id);
-         if(symbol)
-         {
+         if(symbol) {
             return symbol;
          }
       }
@@ -379,11 +476,9 @@ public class TypeCheckVisitor implements Visitor
       System.exit(1);
    }
 
-   private Struct getStructFromTables(String id)
-   {
-      Struct s = structTables.get(structTables.size()-1).getStruct(id)
-      if (s)
-      {
+   private Struct getStructFromTables(String id) {
+      Struct s = structTables.get(structTables.size()-1).getStruct(id);
+      if (s) {
          return s;
       }
 
@@ -391,11 +486,22 @@ public class TypeCheckVisitor implements Visitor
       System.exit(1);
    }
 
-   private void assertType(Type expected, Type actual)
-   {
-      if(!acutal.getClass().equals(expected.getClass()))
-      {
+   private Struct removeStructFromTables(String id) {
+      structTables.get(structTables.size()-1).removeStruct(id);
+
+      System.err.println("Error: Struct " + id + " not found in struct table.");
+      System.exit(1);
+   }
+
+   private void assertType(Type expected, Type actual) {
+      if(!acutal.getClass().equals(expected.getClass())) {
          System.err.println("Error: Type Mismatch");
+      }
+   }
+
+   private void visitList(List<Declaration> lx) {
+      for (Declaration d : lx) {
+         this.visit(d);
       }
    }
 
