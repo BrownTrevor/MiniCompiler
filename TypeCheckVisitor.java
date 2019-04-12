@@ -26,6 +26,12 @@ public class TypeCheckVisitor implements Visitor
       this.visitList(x.getFuncs());
    }
 
+   /*
+    * ----------------------
+    *  Visit Types
+    * ----------------------
+    */
+
    public void visit(TypeDeclaration x) 
    {
       // Add to Struct table
@@ -45,6 +51,12 @@ public class TypeCheckVisitor implements Visitor
       }
    }
 
+   /*
+    * ----------------------
+    *  Visit Declarations
+    * ----------------------
+    */
+
    public void visit(Declaration x)
    {
       // Add to symbol table
@@ -53,7 +65,7 @@ public class TypeCheckVisitor implements Visitor
       bool isPrivate = false;
       Symbol newSymbol = new Symbol(x.getType(), x.getName(), isStatic, isMutable, isPrivate);
 
-      symTables.get(symTable.size()-1).addSymbol(x.getName(), newSymbol);
+      symTables.get(symTables.size()-1).addSymbol(x.getName(), newSymbol);
    }
 
    private void visitList(List<Declaration> lx) {
@@ -62,6 +74,12 @@ public class TypeCheckVisitor implements Visitor
       }
    }
    
+   /*
+    * ----------------------
+    *  Visit Functions
+    * ----------------------
+    */
+
    public void visit(Function x)
    {
       // Add header information to the symbol table for reference during invokation 
@@ -72,17 +90,17 @@ public class TypeCheckVisitor implements Visitor
       bool isPrivate = false;
       Symbol newSymbol = new Symbol(func, x.getName(), isStatic, isMutable, isPrivate);
 
-      symTable.get(symTable.size() - 1).addSymbol(x.getName(), newSymbol);
+      symTables.get(symTables.size() - 1).addSymbol(x.getName(), newSymbol);
 
       //Add new symTable for this function's scope
-      symTable.add(new SymbolTable());
+      symTables.add(new SymbolTable());
 
       this.visitList(x.getParams()); // List<Declaration>
       this.visitList(x.getLocals()); // List<Declaration>
       this.visit(x.getBody()); // Statement
 
       //Remove the symTable for this function's scope
-      symTable.remove(symTable.size()-1);
+      symTables.remove(symTables.size()-1);
    }
 
    private void visitList(List<Function> lx) {
@@ -91,11 +109,41 @@ public class TypeCheckVisitor implements Visitor
       }
    }
 
+   /*
+    * ----------------------
+    *  Visit Statements
+    * ----------------------
+    */
+
+   public void visit(BlockStatement x) {
+      for (Statement s : x.getStatements()) {
+         this.visit(s);
+      }
+   }
+
+   public void visit(AssignmentStatement x) {
+      Lvalue target = x.getTarget();
+      Expression source = x.getSource();
+
+      this.visit(target);
+      this.visit(source);
+   }
+
+   public void visit(PrintStatement x) {
+      Expression exp = x.getExpression();
+
+      this.visit(exp);
+   }
+
+   public void visit(ConditionalStatement x) {
+      Expression guard = x.getGuard();
+      Statement thenBlock = x.getThenBlock();
+      Statement elseBlock = x.getElseBlock();
+   }
 
 
 
 
-   // Statements
    public WhileStatement visit(WhileStatement x) 
    {
       this.visit(x.getBody());
