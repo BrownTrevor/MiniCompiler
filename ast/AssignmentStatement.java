@@ -1,5 +1,7 @@
 package ast;
 
+import com.sun.javafx.fxml.expression.Expression;
+
 public class AssignmentStatement
    extends AbstractStatement
 {
@@ -12,4 +14,16 @@ public class AssignmentStatement
       this.target = target;
       this.source = source;
    }
+
+   public Lvalue getLValue()
+   {
+      return this.target();
+   }
+
+   public Expression getSource()
+   {
+      return this.getSource();
+   }
+
+   
 }

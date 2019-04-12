@@ -15,4 +15,14 @@ public class InvocationExpression
       this.name = name;
       this.arguments = arguments;
    }
+
+   public String getName() 
+   {
+      return this.name;
+   }
+
+   public List<Expression> getArguments()
+   {
+      return this.arguments;
+   }
 }
