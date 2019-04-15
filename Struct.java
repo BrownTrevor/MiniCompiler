@@ -24,11 +24,11 @@ public class Struct
 
    public Type getField(String fieldName) {
       Type t = fields.get(fieldName);
-      if (t) {
+      if (t != null) {
          return t;
       }
 
-      System.err.println("Error: Field " + t + " does not exist.");
+      System.err.println("Error: Field " + fieldName + " does not exist.");
       System.exit(1);
    }
 

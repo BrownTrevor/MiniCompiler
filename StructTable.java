@@ -31,7 +31,14 @@ public class StructTable
 
    public Struct getStruct(String id)
    {
-      return this.table.get(id);
+      Struct struct = this.table.get(id);
+
+      if (struct != null) {
+         return struct;
+      }
+
+      System.err.println("Error: Struct " + s + " does not exist.");
+      System.exit(1);
    }
 }
 

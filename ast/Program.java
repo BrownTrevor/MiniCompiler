@@ -20,11 +20,11 @@ public class Program
       return this.types;
    }
 
-   public List<Declaration> getTypes() {
+   public List<Declaration> getDeclarations() {
       return this.decls;
    }
    
-   public List<Function> getTypes() {
+   public List<Function> getFunctions() {
       return this.funcs;
    }
 }

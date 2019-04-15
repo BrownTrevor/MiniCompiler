@@ -1,38 +1,17 @@
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.Stack;
+import java.util.List;
 
-import com.sun.javafx.fxml.expression.BinaryExpression;
-
-import ast.Declaration;
-import ast.FalseExpression;
-import ast.Function;
-import ast.LvalueDot;
-import ast.LvalueId;
-import ast.ReadExpression;
-import ast.ReturnStatement;
-import ast.StructType;
-import ast.TrueExpression;
-import ast.TypeDeclaration;
-import ast.WhileStatement;
-import javafx.scene.media.MediaException.Type;
-import jdk.jshell.TypeDeclSnippet;
+import ast.*;
+import ast.UnaryExpression.Operator;
+import ast.BinaryExpression.Operator;
 
 public class TypeCheckVisitor implements Visitor 
 {
 
    ArrayList<SymbolTable> symTables = new ArrayList<SymbolTable>(); 
    ArrayList<StructTable> structTables = new ArrayList<StructTable>(); 
-
-   private Symbol getFromSymTables(String name) {
-      for(SymbolTable symTable : symTables) {
-         if(symTable.containsKey(name)) {
-            return symTable.get(name);
-         }
-      }
-
-      return null;
-   }
 
 
    public void visit(Program x)
@@ -242,7 +221,7 @@ public class TypeCheckVisitor implements Visitor
 
       if(!(e instanceof InvocationExpression)) {
          System.out.println("Invocation of function must contain an invocation expression");
-         exit(1);
+         System.exit(1);
       }
 
       String name = e.getName();
@@ -250,12 +229,12 @@ public class TypeCheckVisitor implements Visitor
 
       if(func == null) {
          System.out.println("Function with name: " + name + " does not exist");
-         exit(1);
+         System.exit(1);
       }
 
       if(!(func.type instanceof FunctionType)) {
          System.out.println("Structure with name: " + name + " cannot be invoked");
-         exit(1);
+         System.exit(1);
       }
 
       List<Expression> arguments = e.getArguments();
@@ -269,14 +248,14 @@ public class TypeCheckVisitor implements Visitor
 
       if(argTypes.size() != paramTypes.size()) {
          System.out.println("Function: " + name + " invocation requires: " + paramTypes.size() + " arguments, but was given: " + argTypes.size());
-         exit(1);
+         System.exit(1);
       }
 
       // TODO: this contains call might not work; must check type of each Type in lists
       for(Type t : paramTypes) {
          if(!argTypes.contains(t)) {
             System.out.println("Function: " + name + " invocation given improper arguments");
-            exit(1);
+            System.exit(1);
          }
       }
 
@@ -313,67 +292,67 @@ public class TypeCheckVisitor implements Visitor
       Operator o = x.getOperator();
       
       switch (o) {
-         case TIMES: 
+         case BinaryExpression.Operator.TIMES: 
             assertType(new IntType(), left);
             assertType(new IntType(), right);
             return right;
             break;
-         case DIVIDE:
+         case BinaryExpression.Operator.DIVIDE:
             assertType(new IntType(), left);
             assertType(new IntType(), right);
             return right;
             break;
-         case PLUS:
+         case BinaryExpression.Operator.PLUS:
             assertType(new IntType(), left);
             assertType(new IntType(), right);
             return right;
             break;
-         case MINUS: 
+         case BinaryExpression.Operator.MINUS: 
             assertType(new IntType(), left);
             assertType(new IntType(), right);
             return right;
             break;
-         case LT:
+         case BinaryExpression.Operator.LT:
             assertType(new IntType(), left);
             assertType(new IntType(), right);
             return right;
             break;
-         case GT:
+         case BinaryExpression.Operator.GT:
             assertType(new IntType(), left);
             assertType(new IntType(), right);
             return right;
             break;
-         case LE:
+         case BinaryExpression.Operator.LE:
             assertType(new IntType(), left);
             assertType(new IntType(), right);
             return right;
             break;
-         case GE:
+         case BinaryExpression.Operator.GE:
             assertType(new IntType(), left);
             assertType(new IntType(), right);
             return right;
             break;
-         case EQ:
+         case BinaryExpression.Operator.EQ:
             assertType(left, right);
             return right;
             break;
-         case NE:
+         case BinaryExpression.Operator.NE:
             assertType(left, right);
             return right;
             break;
-         case AND: 
+         case BinaryExpression.Operator.AND: 
             assertType(new BoolType(), left);
             assertType(new BoolType(), right);
             return right;
             break;
-         case OR:
+         case BinaryExpression.Operator.OR:
             assertType(new BoolType(), left);
             assertType(new BoolType(), right);
             return right;
             break;
          default:
             System.err.println("Error: Not a binary operator.");
-            exit(1);
+            System.exit(1);
       }
    }
 
@@ -401,17 +380,11 @@ public class TypeCheckVisitor implements Visitor
     */
    public Type visit(InvocationExpression x) {
       Symbol funcSymbol = getFromSymTables(x.getName());
-      assertType(new FunctionType(), funcSymbol.getType());
+      assertType(new FunctionType(null, null, null), funcSymbol.getType());
       FunctionType funcDecl = funcSymbol.getType();
 
-
-      Iterator it1 = x.getArguments().iterator();
-      Iterator it2 = funcDecl.getParams().iterator();
-      while(it1.hasNext() && it2.hasNext()) {
-         Type expected = it1.next();
-         Type actual = it2.next();
-         assertType(expected, actual);
-      }
+      assertTypeLists(this.expListToTypeList(x.getArguments()), 
+         this.declListToTypeList(funcDecl.getParams()));
 
       return funcDecl.getRetType();
    }
@@ -443,10 +416,10 @@ public class TypeCheckVisitor implements Visitor
 
    /*
     * Logic: 
-    * 1. Return new BooleanType
+    * 1. Return new BoolType
     */
    public Type visit(TrueExpression x) {
-      return new BooleanType();
+      return new BoolType();
    }
 
    /*
@@ -456,11 +429,11 @@ public class TypeCheckVisitor implements Visitor
     */
    public Type visit(UnaryExpression x) {
       Type operandType = this.visit(x.getOperand());
-      if (x.getOperator() == NOT) {
-         assertType(new BooleanType(), operandType);
+      if (x.getOperator() == UnaryExpression.Operator.NOT) {
+         assertType(new BoolType(), operandType);
          return operandType;
       }
-      else if (x.getOperator == MINUS) {
+      else if (x.getOperator() == UnaryExpression.Operator.MINUS) {
          assertType(new IntType(), operandType);
          return operandType;
       }
@@ -473,8 +446,8 @@ public class TypeCheckVisitor implements Visitor
 
    private Symbol getSymbolFromTables(String id) {
       for (int i = symTables.size()-1; i >= 0; i--) {
-         Symbol symbol = symTables.get(i).get(id);
-         if(symbol) {
+         Symbol symbol = symTables.get(i).getSymbol(id);
+         if(symbol != null) {
             return symbol;
          }
       }
@@ -485,7 +458,7 @@ public class TypeCheckVisitor implements Visitor
 
    private Struct getStructFromTables(String id) {
       Struct s = structTables.get(structTables.size()-1).getStruct(id);
-      if (s) {
+      if (s != null) {
          return s;
       }
 
@@ -501,7 +474,7 @@ public class TypeCheckVisitor implements Visitor
    }
 
    private void assertType(Type expected, Type actual) {
-      if(!acutal.getClass().equals(expected.getClass())) {
+      if(actual.getClass().equals(expected.getClass())) {
          System.err.println("Error: Type Mismatch");
       }
    }
@@ -509,6 +482,36 @@ public class TypeCheckVisitor implements Visitor
    private void visitList(List<Declaration> lx) {
       for (Declaration d : lx) {
          this.visit(d);
+      }
+   }
+
+   private List<Type> expListToTypeList(List<Expression> list) {
+      List<Type> typeList = new ArrayList<Type>();
+
+      for (Expression e : list) {
+         typeList.add(this.visit(e));
+      }
+
+      return typeList;
+   }
+
+   private List<Type> declListToTypeList(List<Declaration> list) {
+      List<Type> typeList = new ArrayList<Type>();
+
+      for (Declaration d : list) {
+         typeList.add(d.getType());
+      }
+
+      return typeList;
+   }
+
+   private void assertTypeLists(List<Type> l1, List<Type> l2) {
+      Iterator it1 = l1.iterator();
+      Iterator it2 = l2.iterator();
+      while (it1.hasNext() && it2.hasNext()) {
+         Type expected = (Type)it1.next();
+         Type actual = (Type)it2.next();
+         assertType(expected, actual);
       }
    }
 

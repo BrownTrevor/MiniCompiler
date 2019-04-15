@@ -1,4 +1,4 @@
+package ast;
 
-public class NullType 
-   implements Type {
+public class NullType implements Type {
 }

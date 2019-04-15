@@ -23,12 +23,26 @@ public class SymbolTable
 
    public Symbol removeSymbol(String symbolName)
    {
-      return table.remove(structName);
+      Symbol symbol = this.table.remove(structName);
+
+      if (symbol != null) {
+         return symbol;
+      }
+
+      System.err.println("Error: Symbol " + symbolName + " not found in table");
+      System.exit(1);
    }
 
    public Symbol getSymbol(String symbolName)
    {
-      return this.table.get(symbolName);
+      Symbol symbol = this.table.get(structName);
+
+      if (symbol != null) {
+         return symbol;
+      }
+
+      System.err.println("Error: Symbol " + symbolName + " not found in table");
+      System.exit(1);
    }
 }
 
