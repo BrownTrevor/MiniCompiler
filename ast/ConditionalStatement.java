@@ -16,18 +16,20 @@ public class ConditionalStatement
       this.elseBlock = elseBlock;
    }
 
-   public Expression getGuard()
-   {
+   public Expression getGuard() {
       return this.guard;
    }
 
-   public Statement getThenBlock()
-   {
+   public Statement getThenBlock() {
       return this.thenBlock;
    }
 
-   public Statement getElseBlock()
-   {
+   public Statement getElseBlock() {
       return this.elseBlock;
-   } 
+   }
+
+   @Override
+   public String toString() {
+      return "Conditional statement";
+   }
 }

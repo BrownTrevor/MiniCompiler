@@ -1,6 +1,7 @@
 package ast;
 
-public class NewExpression extends AbstractExpression 
+public class NewExpression
+   extends AbstractExpression
 {
    private final String id;
 
@@ -10,11 +11,7 @@ public class NewExpression extends AbstractExpression
       this.id = id;
    }
 
-   /**
-    * @return the id
-    */
-   public String getId() 
-   {
+   public String getId() {
       return this.id;
    }
 }

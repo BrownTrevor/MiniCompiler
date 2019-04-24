@@ -15,13 +15,11 @@ public class TypeDeclaration
       this.fields = fields;
    }
 
-   public String getName()
-   {
+   public String getName() {
       return this.name;
    }
 
-   public List<Declaration> getFields()
-   {
-      return this.fields();
+   public List<Declaration> getFields() {
+      return this.fields;
    }
 }

@@ -16,6 +16,18 @@ public class BinaryExpression
       this.right = right;
    }
 
+   public Operator getOperator() {
+      return this.operator;
+   }
+
+   public Expression getLeft() {
+      return this.left;
+   }
+
+   public Expression getRight() {
+      return this.right;
+   }
+
    public static BinaryExpression create(int lineNum, String opStr,
       Expression left, Expression right)
    {
@@ -66,20 +78,5 @@ public class BinaryExpression
    public static enum Operator
    {
       TIMES, DIVIDE, PLUS, MINUS, LT, GT, LE, GE, EQ, NE, AND, OR
-   }
-
-   public Operator getOperator()
-   {
-      return this.operator;
-   }
-
-   public Expression getLeftExpression()
-   {
-      return this.left;
-   }
-
-   public Expression getRightExpression() 
-   {
-      return this.left;
    }
 }

@@ -11,7 +11,7 @@ public class WhileStatement
       super(lineNum);
       this.guard = guard;
       this.body = body;
-   } 
+   }
 
    public Expression getGuard() {
       return this.guard;
@@ -20,4 +20,9 @@ public class WhileStatement
    public Statement getBody() {
       return this.body;
    }
-} 
+
+   @Override
+   public String toString() {
+      return "While statement";
+   }
+}

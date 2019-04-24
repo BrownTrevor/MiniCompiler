@@ -10,8 +10,11 @@ public abstract class AbstractExpression
       this.lineNum = lineNum;
    }
 
-   public int getLineNum()
-   {
+   public int getLineNum() {
       return this.lineNum;
+   }
+
+   public String toString() {
+      return "On line: " + this.lineNum;
    }
 }

@@ -16,13 +16,11 @@ public class InvocationExpression
       this.arguments = arguments;
    }
 
-   public String getName() 
-   {
+   public String getName() {
       return this.name;
    }
 
-   public List<Expression> getArguments()
-   {
+   public List<Expression> getArguments() {
       return this.arguments;
    }
 }

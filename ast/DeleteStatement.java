@@ -11,8 +11,12 @@ public class DeleteStatement
       this.expression = expression;
    }
 
-   public Expression getExpression()
-   {
-      return this.expression; 
+   public Expression getExpression() {
+      return this.expression;
+   }
+
+   @Override
+   public String toString() {
+      return "Delete statement";
    }
 }

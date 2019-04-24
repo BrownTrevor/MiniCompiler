@@ -11,8 +11,12 @@ public class ReturnStatement
       this.expression = expression;
    }
 
-   public Expression getExpression() 
-   {
+   public Expression getExpression() {
       return this.expression;
+   }
+
+   @Override
+   public String toString() {
+      return "Return statement";
    }
 }

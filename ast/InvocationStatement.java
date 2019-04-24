@@ -16,4 +16,9 @@ public class InvocationStatement
    public Expression getExpression() {
       return this.expression;
    }
+
+   @Override
+   public String toString() {
+      return "Invocation statement";
+   }
 }

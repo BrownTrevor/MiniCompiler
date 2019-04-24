@@ -1,50 +1,55 @@
-import java.util.HashMap;
+import java.util.*;
 
-public class SymbolTable 
-{
-   HashMap<String, Symbol> table;
+public class SymbolTable {
+   private HashMap<String, Symbol> table;
 
    public SymbolTable()
    {
-      table = new HashMap<String, Symbol>();
+      this.table = new HashMap<String, Symbol>();
    }
 
-   public void addSymbol(String symbolName, Symbol symbolInstance)
-   {
-      if (table.get(symbolName) == null)
-      {
-         table.put(symbolName, symbolInstance);
+   public void addSymbol(String symbolName, Symbol symbolInstance) {
+      if (this.table.get(symbolName) == null) {
+         this.table.put(symbolName, symbolInstance);
       }
-      else 
-      {
-         System.out.println("Error: Redeclaration of symbol: " + symbolName);
+      else {
+         this.error("Redeclaration of symbol: " + symbolName);
       }
    }
 
-   public Symbol removeSymbol(String symbolName)
-   {
-      Symbol symbol = this.table.remove(structName);
-
-      if (symbol != null) {
-         return symbol;
+   public void removeSymbol(String symbolName) {
+      if(this.table.remove(symbolName) == null) {
+         this.error("Cannot remove symbol: " + symbolName + " because it does not exist");
       }
-
-      System.err.println("Error: Symbol " + symbolName + " not found in table");
-      System.exit(1);
    }
 
-   public Symbol getSymbol(String symbolName)
-   {
-      Symbol symbol = this.table.get(structName);
+   public Symbol getSymbol(String symbolName) {
+      Symbol s = this.table.get(symbolName);
 
-      if (symbol != null) {
-         return symbol;
+      if(s == null) {
+         this.error("Cannot retrieve symbol: " + symbolName + " because it does not exist");
       }
 
-      System.err.println("Error: Symbol " + symbolName + " not found in table");
+      return s;
+   }
+
+   public boolean containsSymbol(String symbolName) {
+      return this.table.containsKey(symbolName);
+   }
+
+   @Override
+   public String toString() {
+      String s = "";
+      for(Map.Entry<String, Symbol> symbol : this.table.entrySet()) {
+         s += symbol.getValue().toString() + '\n';
+      }
+
+      return s;
+   }
+
+   private static void error(String msg)
+   {
+      System.err.println(msg);
       System.exit(1);
    }
 }
-
-
-

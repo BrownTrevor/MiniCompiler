@@ -7,4 +7,9 @@ public class ReturnEmptyStatement
    {
       super(lineNum);
    }
+
+   @Override
+   public String toString() {
+      return "Empty statement";
+   }
 }

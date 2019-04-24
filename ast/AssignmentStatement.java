@@ -1,18 +1,19 @@
 package ast;
 
-import com.sun.javafx.fxml.expression.Expression;
-
-public class AssignmentStatement extends AbstractStatement {
+public class AssignmentStatement
+   extends AbstractStatement
+{
    private final Lvalue target;
    private final Expression source;
 
-   public AssignmentStatement(int lineNum, Lvalue target, Expression source) {
+   public AssignmentStatement(int lineNum, Lvalue target, Expression source)
+   {
       super(lineNum);
       this.target = target;
       this.source = source;
    }
 
-   public Lvalue getLValue() {
+   public Lvalue getTarget() {
       return this.target;
    }
 
@@ -20,4 +21,8 @@ public class AssignmentStatement extends AbstractStatement {
       return this.source;
    }
 
+   @Override
+   public String toString() {
+      return "Assignment statement";
+   }
 }

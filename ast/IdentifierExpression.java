@@ -11,8 +11,7 @@ public class IdentifierExpression
       this.id = id;
    }
 
-   public String getId()
-   {
+   public String getId() {
       return this.id;
    }
 }

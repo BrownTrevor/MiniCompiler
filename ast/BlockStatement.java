@@ -19,8 +19,12 @@ public class BlockStatement
       return new BlockStatement(-1, new ArrayList<>());
    }
 
-   public List<Statement> getStatements()
-   { 
+   public List<Statement> getStatements() {
       return this.statements;
+   }
+
+   @Override
+   public String toString() {
+      return "Block statement";
    }
 }

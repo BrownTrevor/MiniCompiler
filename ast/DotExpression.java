@@ -13,13 +13,11 @@ public class DotExpression
       this.id = id;
    }
 
-   public Expression getLeft()
-   {
+   public Expression getLeft() {
       return this.left;
    }
 
-   public String getId()
-   {
-      return this.id; 
+   public String getId() {
+      return this.id;
    }
 }

@@ -1,4 +1,11 @@
 package ast;
 
-public class NullType implements Type {
+public class NullType
+   implements Type
+{
+
+   @Override
+   public String toString() {
+      return "NullType";
+   }
 }

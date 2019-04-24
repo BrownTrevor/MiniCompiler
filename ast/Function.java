@@ -2,9 +2,8 @@ package ast;
 
 import java.util.List;
 
-import javafx.css.Declaration;
-
-public class Function {
+public class Function implements Type
+{
    private final int lineNum;
    private final String name;
    private final Type retType;
@@ -12,8 +11,9 @@ public class Function {
    private final List<Declaration> locals;
    private final Statement body;
 
-   public Function(int lineNum, String name, List<Declaration> params, Type retType, List<Declaration> locals,
-         Statement body) {
+   public Function(int lineNum, String name, List<Declaration> params,
+      Type retType, List<Declaration> locals, Statement body)
+   {
       this.lineNum = lineNum;
       this.name = name;
       this.params = params;
@@ -22,35 +22,43 @@ public class Function {
       this.body = body;
    }
 
-   public String getName() 
-   {
+   public String getName() {
       return this.name;
    }
 
-   public Type getRetType() 
-   {
+   public Type getType() {
       return this.retType;
    }
 
-   public List<Declaration> getParams() 
-   {
+   public List<Declaration> getParams() {
       return this.params;
    }
 
-   public List<Declaration> getLocals() 
-   {
+   public List<Declaration> getLocals() {
       return this.locals;
    }
 
-   public Statement getBody()
-   {
+   public Statement getBody() {
       return this.body;
    }
 
-   public int getLineNum() 
-   {
-      return this.lineNum;
+   @Override
+   public String toString() {
+      String s = "Name: " + this.name + " Return type: " + this.retType + '\n';
+
+      s += "Params: " + '\n';
+      for(Declaration param : this.params) {
+         s += param.toString();
+      }
+
+      s += "Locals: " + '\n';
+      for(Declaration local : this.locals) {
+         s += local.toString();
+      }
+
+      s += "Body: " + '\n';
+      s += this.body.toString() + '\n';
+
+      return s;
    }
-
 }
-

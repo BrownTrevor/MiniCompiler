@@ -13,13 +13,16 @@ public class Declaration
       this.name = name;
    }
 
-   public String getName() 
-   {
+   public String getName() {
       return this.name;
    }
 
-   public Type getType()
-   {
+   public Type getType() {
       return this.type;
+   }
+
+   @Override
+   public String toString() {
+      return "Name: " + this.name + " Type: " + this.type + '\n';
    }
 }

@@ -13,6 +13,14 @@ public class UnaryExpression
       this.operand = operand;
    }
 
+   public Operator getOperator() {
+      return this.operator;
+   }
+
+   public Expression getOperand() {
+      return this.operand;
+   }
+
    public static UnaryExpression create(int lineNum, String opStr,
       Expression operand)
    {
@@ -30,14 +38,6 @@ public class UnaryExpression
       }
    }
 
-
-   public Operator getOperator() {
-      return this.operator;
-   }
-
-   public Expression getOperand() {
-      return this.operand;
-   }
    private static final String NOT_OPERATOR = "!";
    private static final String MINUS_OPERATOR = "-";
 
