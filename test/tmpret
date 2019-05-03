@@ -7,6 +7,7 @@ fun bar(int i) int      # control flow case
 {
    if (i > 0)
    {
+      return 1;
    }
    else
    {
@@ -16,6 +17,7 @@ fun bar(int i) int      # control flow case
       }
       else
       {
+         return 0;
       }
    }
 }

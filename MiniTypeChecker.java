@@ -84,7 +84,11 @@ public class MiniTypeChecker {
       this.visitDeclarationList(func.getParams()); // List<Declaration>
       this.visitDeclarationList(func.getLocals()); // List<Declaration>
       System.out.println("visiting function: " + func.getName());
-      this.visitStatement(func.getBody(), func.getType()); // Statement
+      ast.Type retType = this.visitStatement(func.getBody(), func.getType()); // Statement
+
+      if(!(this.isSameType(retType, func.getType()))) {
+         this.error("Expected return type: " + func.getType().toString() + " found: " + retType.toString());
+      }
 
       //Remove the symbolTable for this function's scope
       this.symbolTables.remove(this.symbolTables.size()-1);
@@ -116,37 +120,39 @@ public class MiniTypeChecker {
     * Statements
     */
 
-   private void visitStatement(ast.Statement statement, ast.Type retType) {
+   private ast.Type visitStatement(ast.Statement statement, ast.Type retType) {
       if(statement instanceof ast.AssignmentStatement) {
-         this.visitAssignmentStatement(statement, retType);
+         return this.visitAssignmentStatement(statement, retType);
       }
       else if(statement instanceof ast.BlockStatement) {
-         this.visitBlockStatement(statement, retType);
+         return this.visitBlockStatement(statement, retType);
       }
       else if(statement instanceof ast.ConditionalStatement) {
-         this.visitConditionalStatement(statement, retType);
+         return this.visitConditionalStatement(statement, retType);
       }
       else if(statement instanceof ast.DeleteStatement) {
-         this.visitDeleteStatement(statement, retType);
+         return this.visitDeleteStatement(statement, retType);
       }
       else if(statement instanceof ast.InvocationStatement) {
-         this.visitInvocationStatement(statement, retType);
+         return this.visitInvocationStatement(statement, retType);
       }
       else if(statement instanceof ast.PrintLnStatement) {
-         this.visitPrintLnStatement(statement, retType);
+         return this.visitPrintLnStatement(statement, retType);
       }
       else if(statement instanceof ast.PrintStatement) {
-         this.visitPrintStatement(statement, retType);
+         return this.visitPrintStatement(statement, retType);
       }
       else if(statement instanceof ast.ReturnEmptyStatement) {
-         this.visitReturnEmptyStatement(statement, retType);
+         return this.visitReturnEmptyStatement(statement, retType);
       }
       else if(statement instanceof ast.ReturnStatement) {
-         this.visitReturnStatement(statement, retType);
+         return this.visitReturnStatement(statement, retType);
       }
       else if(statement instanceof ast.WhileStatement) {
-         this.visitWhileStatement(statement, retType);
+         return this.visitWhileStatement(statement, retType);
       }
+
+      return new ast.VoidType();
    }
 
    /*
@@ -201,7 +207,9 @@ public class MiniTypeChecker {
          }
       }
 
-      return sourceType;
+      //return sourceType;
+      
+      return new ast.VoidType();
    }
 
    /*
@@ -210,16 +218,21 @@ public class MiniTypeChecker {
     * 2. verify retType
     */
    private ast.Type visitBlockStatement(ast.Statement statement, ast.Type retType) {
+      ast.Type actualRetType = new ast.VoidType();
+
       for(ast.Statement subStatement : ((ast.BlockStatement)statement).getStatements()) {
-         this.visitStatement(subStatement, retType);
+         actualRetType = this.visitStatement(subStatement, retType);
       }
 
-      return null;
+      return actualRetType;
    }
 
    /*
     * Rules:
     * 1. guard must evaluate to booltype
+    * 2. valid returns:
+    *    a. then and else are both VoidType
+    *    b. then and else are both retType
     */
    private ast.Type visitConditionalStatement(ast.Statement statement, ast.Type retType) {
       //System.out.println("cond st");
@@ -232,10 +245,22 @@ public class MiniTypeChecker {
       if(!(this.visitExpression(guard) instanceof ast.BoolType)) {
          this.error("Invalid conditional statement: guard must evaluate to a boolean");
       }
-      this.visitStatement(thenBlock, retType);
-      this.visitStatement(elseBlock, retType);
+      
+      ast.Type thenRetType = this.visitStatement(thenBlock, retType);
+      ast.Type elseRetType = this.visitStatement(elseBlock, retType);
 
-      return null;
+      if((this.isSameType(thenRetType, elseRetType)) &&
+         ((thenRetType instanceof ast.VoidType) || (this.isSameType(thenRetType, retType)))) {
+         return thenRetType;
+      }
+      else {
+         this.error("Expected return type: " + retType.toString() + "\n" +
+                    "Found return type: " + thenRetType.toString() + " in then block " + "\n" +
+                    "Found return type: " + elseRetType.toString() + " in else block"
+                    );
+      }
+
+      return new ast.VoidType();
    }
 
 
@@ -264,7 +289,7 @@ public class MiniTypeChecker {
 
       this.removeFromSymbolTables(structReference.getName());
 
-      return null;
+      return new ast.VoidType();
    }
 
 
@@ -302,7 +327,7 @@ public class MiniTypeChecker {
          this.error("Cannot print expression that doesn't result in an integer");
       }
 
-      return result;
+      return new ast.VoidType();
    }
 
    /*
@@ -321,7 +346,7 @@ public class MiniTypeChecker {
          this.error("Cannot print expression that doesn't result in an integer");
       }
 
-      return result;
+      return new ast.VoidType();
    }
 
    /*
@@ -382,7 +407,7 @@ public class MiniTypeChecker {
 
       this.visitStatement(body, retType);
 
-      return null;
+      return new ast.VoidType();
    }
 
    /*
@@ -424,7 +449,7 @@ public class MiniTypeChecker {
          return this.visitUnaryExpression(exp);
       }
 
-      return null;
+      return new ast.VoidType();
    }
 
    /*
@@ -491,7 +516,7 @@ public class MiniTypeChecker {
          return new ast.BoolType();
       }
 
-      return null;
+      return new ast.VoidType();
    }
 
    /*
@@ -697,7 +722,7 @@ public class MiniTypeChecker {
          return new ast.BoolType();
       }
 
-      return null;
+      return new ast.VoidType();
    }
 
 
