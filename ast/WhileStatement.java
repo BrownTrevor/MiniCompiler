@@ -1,5 +1,7 @@
 package ast;
 
+import cfg.*;
+
 public class WhileStatement
    extends AbstractStatement
 {
@@ -24,5 +26,19 @@ public class WhileStatement
    @Override
    public String toString() {
       return "While statement";
+   }
+
+   public CFGNode generateCFG(CFGNode currentBlock, CFGNode exitBlock) {
+      // TODO: make instructions for the guard and add to current block
+
+      CFGNode conditionalBlock = new CFGNode();
+      CFGNode bodyBlock = new CFGNode();
+      CFGNode joinBlock = new CFGNode();
+
+      currentBlock.addChild(conditionalBlock);
+      conditionalBlock.addChild(bodyBlock);
+      conditionalBlock.addChild(joinBlock);
+
+      return joinBlock;
    }
 }

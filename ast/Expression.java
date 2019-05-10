@@ -2,5 +2,5 @@ package ast;
 
 public interface Expression
 {
-   public Value generateInstructions(CFGNode current);
+   public cfg.Value generateInstructions(cfg.CFGNode current);
 }

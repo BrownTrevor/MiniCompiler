@@ -1,5 +1,7 @@
 package ast;
 
+import cfg.*;
+
 public class ConditionalStatement
    extends AbstractStatement
 {
@@ -31,5 +33,24 @@ public class ConditionalStatement
    @Override
    public String toString() {
       return "Conditional statement";
+   }
+   
+   public CFGNode generateCFG(CFGNode currentBlock, CFGNode exitBlock) {
+      // TODO: make instructions for the guard and add to current block
+
+      CFGNode thenBlock = new CFGNode();
+      CFGNode thenResBlock = this.thenBlock.generateCFG(thenBlock, exitBlock);
+
+      CFGNode elseBlock = new CFGNode();
+      CFGNode elseResBlock = this.elseBlock.generateCFG(elseBlock, exitBlock);
+
+      CFGNode joinBlock = new CFGNode();
+      thenResBlock.addChild(joinBlock);
+      elseResBlock.addChild(joinBlock);
+
+      currentBlock.addChild(thenBlock);
+      currentBlock.addChild(elseBlock);
+
+      return joinBlock;
    }
 }
