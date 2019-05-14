@@ -150,4 +150,9 @@ public class Function implements Type
       // my ide didn't like that i didnt have a ret stmt here
       return "-1";
    }
+
+
+   public String llvmType() {
+      return "function";
+   }
 }

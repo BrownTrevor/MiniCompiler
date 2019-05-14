@@ -1,5 +1,7 @@
 package ast;
 
+import cfg.*;
+
 public class BinaryExpression
    extends AbstractExpression
 {
@@ -78,5 +80,53 @@ public class BinaryExpression
    public static enum Operator
    {
       TIMES, DIVIDE, PLUS, MINUS, LT, GT, LE, GE, EQ, NE, AND, OR
+   }
+
+   public Value generateInstructions(CFGNode currentBlock) {
+      Value rightVal = this.right.generateInstructions(currentBlock);
+      Value leftVal = this.left.generateInstructions(currentBlock);
+
+      String instruction = Register.newRegister() + " = ";
+      instruction += (this.operatorToLLVM() + " " + rightVal.getLlvmType()
+         + " " + rightVal.getRegister() + ", " + leftVal.getRegister());
+
+      currentBlock.addInstruction(instruction);
+
+      return new Value(rightVal.getLlvmType(), Register.currentRegister());
+   }
+
+
+
+   public String operatorToLLVM () {
+      switch (this.operator) {
+         case TIMES:
+            return "mul";
+         case DIVIDE:
+            return "sdiv";
+         case PLUS:
+            return "add";
+         case MINUS:
+            return "sub";
+         case LT:
+            return "imcp slt";
+         case LE:
+            return "imcp sle";
+         case GT:
+            return "imcp sgt";
+         case GE:
+            return "imcp sge";
+         case EQ:
+            return "imcp eq";
+         case NE:
+            return "imcp ne";
+         case AND:
+            return "and";
+         case OR:
+            return "or";
+         default:
+            System.err.println("Error: Operator mismatch");
+            System.exit(1);
+      }
+      return null;
    }
 }

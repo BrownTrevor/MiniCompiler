@@ -1,3 +1,5 @@
+package cfg;
+
 import java.util.ArrayList;
 
 public class Tables {
@@ -12,12 +14,12 @@ public class Tables {
    }
 
    // Retrieves the struct with name structName at the most recent scope
-   public static Struct getFromStructTables(String structName) {
+   public static Struct getFromStructTable(String structName) {
       if (!structTable.containsStruct(structName)) {
          error("Cannot retrieve struct: " + structName + " because it does not exist");
       }
 
-      return structTable.getStruct(structName);
+      return structTable.getStruct(structName); 
    }
 
    // true if in struct tables; false otherwise
@@ -35,7 +37,7 @@ public class Tables {
    }
 
    // Retrieves the symbol with name symbolName at the most recent scope
-   public static Symbol getFromSymbolTables(String symbolName) {
+   public static Symbol getFromSymbolTable(String symbolName) {
       Symbol topSymbol = null;
 
       for (SymbolTable table : symbolTable) {

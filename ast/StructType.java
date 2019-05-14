@@ -20,4 +20,8 @@ public class StructType
    public String toString() {
       return "StructType; name: " + this.name;
    }
+
+   public String llvmType() {
+      return "pointer of some sort";
+   }
 }

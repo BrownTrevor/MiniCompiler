@@ -1,5 +1,7 @@
 package ast;
 
+import cfg.*;
+
 public class LvalueDot
    implements Lvalue
 {
@@ -20,5 +22,9 @@ public class LvalueDot
 
    public String getId() {
       return this.id;
+   }
+
+   public Value generateInstructions(CFGNode currentBlock) {
+      return null;
    }
 }

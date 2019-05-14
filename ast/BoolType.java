@@ -7,4 +7,8 @@ public class BoolType
    public String toString() {
       return "BoolType";
    }
+
+   public String llvmType() {
+      return "i1";
+   }
 }

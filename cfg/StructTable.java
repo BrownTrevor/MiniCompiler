@@ -1,3 +1,5 @@
+package cfg;
+
 import java.util.*;
 
 public class StructTable {
@@ -47,7 +49,7 @@ public class StructTable {
       return s;
    }
 
-   private static void error(String msg)
+   private void error(String msg)
    {
       System.err.println(msg);
       System.exit(1);

@@ -1,5 +1,7 @@
 package ast;
 
+import cfg.*;
+
 public class AssignmentStatement
    extends AbstractStatement
 {
@@ -24,5 +26,16 @@ public class AssignmentStatement
    @Override
    public String toString() {
       return "Assignment statement";
+   }
+
+   public CFGNode generateCFG(CFGNode currentBlock, CFGNode exitBblock) {
+      Value rVal = this.source.generateInstructions(currentBlock);
+      Value target = this.target.generateInstructions(currentBlock);
+
+      String instruction = "store " + target.getRegister() + ", " 
+         + rVal.getRegister();
+      
+      currentBlock.addInstruction(instruction);
+      return currentBlock;
    }
 }

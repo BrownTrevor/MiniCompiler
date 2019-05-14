@@ -53,10 +53,10 @@ public class UnaryExpression
       Value operandVal = this.operand.generateInstructions(currentBlock);
       String instruction = Register.newRegister() + " = ";
 
+
       // which operator is this?
-      if(this.operator == Operator.NOT) {
-         instruction += ("xor " + operandVal.getLlvmType() + " " + 
-            operand.getRegister() + ", " + operandVal.getRegister());
+      if(this.operator == Operator.NOT && !operandVal.getLlvmType().equals("i1")) {
+         instruction += ("xor i1 " + operandVal.getRegister() + ", 1");
       }
       else if(this.operator == Operator.MINUS){
          instruction += ("sub " + operandVal.getLlvmType() + " 0, " +
@@ -67,6 +67,6 @@ public class UnaryExpression
          System.exit(1);
       }      
 
-      return new Value(operandVal.getLlvmType(), Register.getRegister());
+      return new Value(operandVal.getLlvmType(), Register.currentRegister());
    }
 }

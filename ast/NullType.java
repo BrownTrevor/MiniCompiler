@@ -8,4 +8,8 @@ public class NullType
    public String toString() {
       return "NullType";
    }
+
+   public String llvmType() {
+      return "TODO";
+   }
 }

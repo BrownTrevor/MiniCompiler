@@ -1,4 +1,5 @@
 import java.util.*;
+import cfg.*;
 
 
 public class MiniTypeChecker {

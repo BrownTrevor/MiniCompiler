@@ -1,5 +1,7 @@
 package ast;
 
+import cfg.*;
+
 public class PrintStatement
    extends AbstractStatement
 {
@@ -18,5 +20,13 @@ public class PrintStatement
    @Override
    public String toString() {
       return "Print statement";
+   }
+
+
+   public CFGNode generateCFG(CFGNode currentBlock, CFGNode exitBlock) {
+      
+      currentBlock.addInstruction("print x");  
+
+      return currentBlock;
    }
 }

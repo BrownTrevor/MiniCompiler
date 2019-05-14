@@ -7,4 +7,8 @@ public class IntType
    public String toString() {
       return "IntType";
    }
+
+   public String llvmType() {
+      return "i32";
+   }
 }
