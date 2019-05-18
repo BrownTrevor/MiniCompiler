@@ -1,6 +1,7 @@
 package ast;
 
 import cfg.*;
+import llvm.*;
 
 public class LvalueId
    implements Lvalue
@@ -21,18 +22,14 @@ public class LvalueId
 
 
    public Value generateInstructions(CFGNode currentBlock) {
-      String instruction = Register.newRegister() + " = load ";
-      // <result> = load <ty>* <pointer> will the type always be i32?
-
       // type must be retrieved by the this.id
       Symbol sym = Tables.getFromSymbolTable(this.id);
-      String targetType =  sym.getType().llvmType();
-
-      instruction += (targetType + "* %" + this.id);
+      String type =  sym.getType().llvmType() + "*";
+      Llvm instruction = new Load(Register.newRegister(), type, this.id);
 
       currentBlock.addInstruction(instruction);
 
-      return (new Value(targetType, Register.currentRegister()));
+      return (new Value(type, Register.currentRegister()));
    }
 
 }
