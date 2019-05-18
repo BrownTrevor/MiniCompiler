@@ -201,7 +201,7 @@ public class MiniTypeChecker {
          }
 
          Struct struct = this.getFromStructTables(leftStruct.getName());
-         ast.Type targetType = struct.getField(id);
+         ast.Type targetType = struct.getFieldType(id);
          
          if(!(this.isSameType(targetType, sourceType))) {
             this.error("Cannot assign source of type: " + sourceType.toString() + " to target of type: " + leftType.toString());
@@ -542,7 +542,7 @@ public class MiniTypeChecker {
       }
 
       Struct struct = this.getFromStructTables(leftStruct.getName());
-      ast.Type targetType = struct.getField(id);
+      ast.Type targetType = struct.getFieldType(id);
          
       return targetType;
    }

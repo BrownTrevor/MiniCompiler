@@ -1,5 +1,6 @@
 package ast;
 
+
 import cfg.*;
 
 public class LvalueDot
@@ -25,6 +26,22 @@ public class LvalueDot
    }
 
    public Value generateInstructions(CFGNode currentBlock) {
-      return null;
+      String instruction = "";
+      Value leftVal = left.generateInstructions(currentBlock);
+      String structName = leftVal.getLlvmType().substring(0, 7);
+      Struct struct = Tables.getFromStructTable(structName);
+      StructField target = struct.getField(this.id);
+      // <result> = getelementptr <pty>* <ptrval> <ty> <idx>
+
+      instruction += (Register.newRegister() + " = getelementptr ");
+      instruction += (leftVal.getLlvmType() + " " + leftVal.getRegister());
+      instruction += (target.getType() + " " + target.getName());
+      
+      
+      currentBlock.addInstruction(instruction);
+      
+      // I'm not sure if this type is right
+      return new Value(Register.currentRegister(), leftVal.getLlvmType());
    }
 }
+

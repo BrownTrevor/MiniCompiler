@@ -4,16 +4,16 @@ import java.util.*;
 
 public class Struct {
    private String name;
-   private HashMap<String, ast.Type> fields;
+   private ArrayList<StructField> fields;
 
    public Struct(String name) {
       this.name = name;
-      this.fields = new HashMap<String, ast.Type>();
+      this.fields = new ArrayList<StructField>();
    }
 
    public Struct(ast.TypeDeclaration typeDecl) {
       this.name = typeDecl.getName();
-      this.fields = new HashMap<String, ast.Type>();
+      this.fields = new ArrayList<StructField>();
 
       for(ast.Declaration decl : typeDecl.getFields()) {
          this.addField(decl.getName(), decl.getType());
@@ -21,28 +21,65 @@ public class Struct {
    }
 
    public void addField(String fieldName, ast.Type fieldType) {
-      if (this.fields.get(fieldName) == null) {
-         this.fields.put(fieldName, fieldType);
+      if (getFieldWithoutErrorCheck(fieldName) == null) {
+         this.fields.add(new StructField(fieldName, fieldType));
       }
       else {
-         this.error("Redeclaration of field: " + fieldName + " in struct: " + this.name);
+         error("Redeclaration of field: " + fieldName + " in struct: " + this.name);
       } 
    }
 
    public void removeField(String fieldName) {
-      if(this.fields.remove(fieldName) == null) {
-         this.error("Cannot remove field: " + fieldName + " in struct: " + this.name + " because it does not exist");
+      for(int i = 0; i < fields.size(); i++) {
+         if (fields.get(i).getName().equals(fieldName)) {
+            fields.remove(i);
+            return;
+         }
       }
    }
 
-   public ast.Type getField(String fieldName) {
-      ast.Type t = this.fields.get(fieldName);
-
-      if(t == null) {
-         this.error("Cannot retrieve field: " + fieldName + " in struct: " + this.name + " because it does not exist");
+   public ast.Type getFieldType(String fieldName) {
+      for(int i = 0; i < fields.size(); i++) {
+         if (fields.get(i).getName().equals(fieldName)) {
+            return fields.get(i).getType();
+         }
       }
 
-      return t;
+      error("Cannot retrieve field: " + fieldName + " in struct: " + this.name + " because it does not exist");
+      return null;
+   }
+
+   public int getFieldIndex(String fieldName) {
+      for (int i = 0; i < fields.size(); i++) {
+         if (fields.get(i).getName().equals(fieldName)) {
+            return i;
+         }
+      }
+
+      error("Cannot retrieve field: " + fieldName + " in struct: " + this.name + " because it does not exist");
+      return -1;
+   }
+
+   public String getFieldName(String fieldName) {
+      for (int i = 0; i < fields.size(); i++) {
+         if (fields.get(i).getName().equals(fieldName)) {
+            return fields.get(i).getName();
+         }
+      }
+
+      error("Cannot retrieve field: " + fieldName + " in struct: " + this.name + " because it does not exist");
+      return null;
+   }
+
+   public StructField getField(String fieldName) {
+      for (int i = 0; i < fields.size(); i++) {
+         if (fields.get(i).getName().equals(fieldName)) {
+            return fields.get(i);
+         }
+      }
+
+      error("Cannot retrieve field: " + fieldName + " in struct: " + this.name + " because it does not exist");
+      return null;
    }
 
    public String getName() {
@@ -53,8 +90,8 @@ public class Struct {
    public String toString() {
       String s = "Name: " + this.name + '\n';
 
-      for(Map.Entry<String, ast.Type> field : this.fields.entrySet()) {
-         s += field.getKey().toString() + "\t" + field.getValue().toString() + '\n';
+      for(StructField field : this.fields) {
+         s += field.getName() + "\t" + field.getType() + '\n';
       }
 
       return s;
@@ -64,5 +101,14 @@ public class Struct {
    {
       System.err.println(msg);
       System.exit(1);
+   }
+
+   private StructField getFieldWithoutErrorCheck(String fieldName) {
+      for (int i = 0; i < fields.size(); i++) {
+         if (fields.get(i).getName().equals(fieldName)) {
+            return fields.get(i);
+         }
+      }
+      return null;
    }
 }

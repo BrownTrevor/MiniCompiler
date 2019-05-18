@@ -18,27 +18,21 @@ public class LvalueId
       return this.id;
    }
 
-   public Value generateInstructions(CFGNode currentBlock, String structId) {
-      String prevRegister = Register.currentRegister();
-      String instruction = Register.newRegister() +  " = load ";
-      String type = "";
-      // <result> = load  <ty>* <pointer>
 
-      // is this id the end of a dot chain? if not just look in the symbol table
-      if (structId == null) {
-         Symbol sym = Tables.getFromSymbolTable(this.id); 
-         type = sym.getType().llvmType();
-         instruction += (type +"* " + this.id);
-      }
-      else {
-         Struct struct = Tables.getFromStructTable(structId);
-         type = struct.getField(this.id).llvmType();
-         instruction += (type + "* " + prevRegister);
-      }
+
+   public Value generateInstructions(CFGNode currentBlock) {
+      String instruction = Register.newRegister() + " = load ";
+      // <result> = load <ty>* <pointer> will the type always be i32?
+
+      // type must be retrieved by the this.id
+      Symbol sym = Tables.getFromSymbolTable(this.id);
+      String targetType =  sym.getType().llvmType();
+
+      instruction += (targetType + "* %" + this.id);
 
       currentBlock.addInstruction(instruction);
 
-      return (new Value(type, Register.currentRegister()));
+      return (new Value(targetType, Register.currentRegister()));
    }
 
 }

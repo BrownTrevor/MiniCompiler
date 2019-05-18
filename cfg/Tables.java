@@ -7,6 +7,9 @@ public class Tables {
    private static StructTable structTable;
    private static ArrayList<SymbolTable> symbolTable;
 
+   // ===================================================
+   // Struct Functions
+   // ===================================================
 
    // Adds structName and structInstance to the current/top struct table
    public static void addToStructTable(Struct struct) {
@@ -30,6 +33,13 @@ public class Tables {
 
       return false;
    }
+
+
+   
+
+   // ===================================================
+   // Symbol Functions
+   // ===================================================
 
    // Adds symbolName and symbolInstance to current/top symbol table
    public static void addToSymbolTable(Symbol symbol) {
