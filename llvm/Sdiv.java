@@ -1,3 +1,5 @@
+package llvm;
+
 public class Sdiv implements Llvm, LlvmArithmetic{
    private String target;
    private String type;

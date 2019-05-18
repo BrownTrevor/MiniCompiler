@@ -1,6 +1,8 @@
 package ast;
 
 import cfg.*;
+import llvm.*;
+
 import java.util.List;
 
 public class Function implements Type
@@ -68,11 +70,10 @@ public class Function implements Type
       CFGNode exitBlock = new CFGNode(); // TODO: setup exit instructions
 
       String functionDeclStr = getFunctionDeclStr();
-      String retTypeString = typeToLlvmStr(retType);
-      String retInstr = "%retval = alloca " + retTypeString;
+      String retInstr = "%retval = alloca " + retType.llvmType();
 
-      rootBlock.addInstruction(functionDeclStr);
-      rootBlock.addInstruction(retInstr);
+      rootBlock.addInstruction(new llvm.Generic(functionDeclStr));
+      rootBlock.addInstruction(new llvm.Generic(retInstr));
       rootBlock = this.visitFunctionParams(params, rootBlock);
       rootBlock = this.visitFunctionDecls(locals, rootBlock);
 
@@ -82,11 +83,11 @@ public class Function implements Type
    }
 
    private String getFunctionDeclStr() {
-      String retTypeStr = typeToLlvmStr(retType);
-      String instruction = "define " + retTypeStr + " @" + this.getName() + "( ";
+      
+      String instruction = "define " + retType.llvmType() + " @" + this.getName() + "( ";
 
       for (Declaration d : params) {
-         instruction += (typeToLlvmStr(d.getType()) + " %p_" + d.getName() + ", ");
+         instruction += (d.getType().llvmType() + " %p_" + d.getName() + ", ");
       }
 
       instruction = instruction.substring(0, instruction.length() - 2) + ")";
@@ -107,13 +108,19 @@ public class Function implements Type
       return current;
    }
 
-   private String paramAllocToInstruction(Declaration d) {
-      String instruction = "%" + d.getName() + " = alloca " + typeToLlvmStr(d.getType());
-      return instruction;
+   private Llvm paramAllocToInstruction(Declaration d) {
+      return new llvm.Alloca(d.getName(), d.getType().llvmType());
    }
 
-   private String paramStoreToInstruction(Declaration d) {
-      return "store %" + d.getName() + ", p_" + d.getName();
+   private Llvm paramStoreToInstruction(Declaration d) {
+      String localType = d.getType().llvmType();
+      String localName = "%" + d.getName();
+      String paramType = d.getType().llvmType() + "*";
+      String paramName = "%_p_" + d.getName();
+
+      return new llvm.Store(paramType, paramName, localType, localName);
+      //"store %" + d.getName() + ", p_" + d.getName();
+      //store i32 %num, i32* %_P_num
    }
 
    private CFGNode visitFunctionDecls(List<Declaration> decls, CFGNode current) {
@@ -125,32 +132,10 @@ public class Function implements Type
       return current;
    }
 
-   private String visitFunctionDecl(Declaration d) {
-      return "%" + d.getName() + " = alloca " + typeToLlvmStr(d.getType());
+   private Llvm visitFunctionDecl(Declaration d) {
+      return new llvm.Alloca(d.getName(), d.getType().llvmType());
+      // "%" + d.getName() + " = alloca " + typeToLlvmStr(d.getType());
    }
-
-   // Converts Type objects to llvm strings
-   private String typeToLlvmStr(Type t) {
-      if (t instanceof BoolType) {
-         return "i32";
-      } else if (t instanceof IntType) {
-         return "i32";
-      } else if (t instanceof NullType) {
-         return "maybe void?";
-      } else if (t instanceof StructType) {
-         // might be a space instead of a period after struct
-         StructType st = (StructType) t;
-         return "%struct." + st.getName() + "*";
-      } else if (t instanceof VoidType) {
-         return "void";
-      } else {
-         System.out.println("ERROR: Invalid type to string conversion");
-         System.exit(1);
-      }
-      // my ide didn't like that i didnt have a ret stmt here
-      return "-1";
-   }
-
 
    public String llvmType() {
       return "function";

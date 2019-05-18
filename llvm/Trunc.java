@@ -1,4 +1,4 @@
-
+package llvm;
 
 public class Trunc implements Llvm {
    private String target;

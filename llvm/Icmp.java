@@ -1,3 +1,4 @@
+package llvm;
 
 public class Icmp implements Llvm, LlvmBranching {
    private String target;

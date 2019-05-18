@@ -1,6 +1,7 @@
 package ast;
 
 import cfg.*;
+import llvm.*;
 
 public class BinaryExpression
    extends AbstractExpression
@@ -86,15 +87,59 @@ public class BinaryExpression
       Value rightVal = this.right.generateInstructions(currentBlock);
       Value leftVal = this.left.generateInstructions(currentBlock);
 
-      String instruction = Register.newRegister() + " = ";
-      instruction += (this.operatorToLLVM() + " " + rightVal.getLlvmType()
-         + " " + rightVal.getRegister() + ", " + leftVal.getRegister());
+      String llvmOp = this.operatorToLLVM();
+      String reg = Register.newRegister();
+      String type = rightVal.getLlvmType();
+      String op1 = rightVal.getRegister();
+      String op2 = leftVal.getRegister();
+      Llvm instruction = null;
+
+      switch (llvmOp) {
+         case "add":
+            instruction = new Add(reg, type, op1, op2);
+            break;
+         case "sub":
+            instruction = new Sub(reg, type, op1, op2);
+            break;
+         case "mul":
+            instruction = new Mul(reg, type, op1, op2);
+            break;
+         case "sdiv":
+            instruction = new Sdiv(reg, type, op1, op2);
+            break;
+         case "and":
+            instruction = new And(reg, type, op1, op2);
+            break;
+         case "or":
+            instruction = new Or(reg, type, op1, op2);
+            break;
+         case "imcp slt":
+            instruction = new Icmp(reg, "slt",type, op1, op2);
+            break; 
+         case "imcp sle":
+            instruction = new Icmp(reg, "sle", type, op1, op2);
+            break;
+         case "imcp sgt":
+            instruction = new Icmp(reg, "sgt", type, op1, op2);
+            break;
+         case "imcp sge":
+            instruction = new Icmp(reg, "sge", type, op1, op2);
+            break;
+         case "imcp eq":
+            instruction = new Icmp(reg, "eq", type, op1, op2);
+            break;
+         case "imcp ne":
+            instruction = new Icmp(reg, "ne", type, op1, op2);
+            break;
+         default: 
+            System.err.println("Error: Operator mismatch");
+            System.exit(1);
+      }
 
       currentBlock.addInstruction(instruction);
 
-      return new Value(rightVal.getLlvmType(), Register.currentRegister());
+      return new Value(type, Register.currentRegister());
    }
-
 
 
    public String operatorToLLVM () {

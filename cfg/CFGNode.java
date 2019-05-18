@@ -1,16 +1,17 @@
 package cfg;
 
 import java.util.*;
+import llvm.*;
 
 public class CFGNode {
    private ArrayList<CFGNode> children;
-   private ArrayList<String> instructions;
+   private ArrayList<Llvm> instructions;
    private Label label;
 
    public CFGNode() {
       this.label = new Label();
       children = new ArrayList<CFGNode>();
-      instructions = new ArrayList<String>();
+      instructions = new ArrayList<Llvm>();
    }
 
    public void addChild(CFGNode node) {
@@ -21,11 +22,11 @@ public class CFGNode {
       return children;
    }
 
-   public List<String> getInstructions() {
+   public List<Llvm> getInstructions() {
       return instructions;
    }
 
-   public void addInstruction(String s) {
+   public void addInstruction(Llvm s) {
       instructions.add(s);
    }
 

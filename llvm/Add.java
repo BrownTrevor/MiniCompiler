@@ -1,4 +1,5 @@
-import ast.*;
+package llvm;
+
 
 public class Add implements Llvm, LlvmArithmetic{
    private String target;

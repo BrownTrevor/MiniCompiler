@@ -1,6 +1,8 @@
 package ast;
 
 import cfg.*;
+import llvm.*;
+
 
 public class AssignmentStatement
    extends AbstractStatement
@@ -31,10 +33,10 @@ public class AssignmentStatement
    public CFGNode generateCFG(CFGNode currentBlock, CFGNode exitBblock) {
       Value rVal = this.source.generateInstructions(currentBlock);
       Value target = this.target.generateInstructions(currentBlock);
-
-      String instruction = "store " + target.getRegister() + ", " 
-         + rVal.getRegister();
       
+      Llvm instruction = new llvm.Store(target.getLlvmType(), 
+         target.getRegister(), rVal.getLlvmType(), rVal.getRegister());
+
       currentBlock.addInstruction(instruction);
       return currentBlock;
    }

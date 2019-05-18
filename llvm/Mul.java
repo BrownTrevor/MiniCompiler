@@ -1,3 +1,4 @@
+package llvm;
 
 public class Mul implements Llvm, LlvmArithmetic {
    private String target;

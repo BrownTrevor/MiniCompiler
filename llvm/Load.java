@@ -1,4 +1,6 @@
 
+package llvm;
+
 public class Load implements Llvm {
    private String target;
    private String type;

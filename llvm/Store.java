@@ -1,3 +1,4 @@
+package llvm;
 
 public class Store implements Llvm {
    private String value;
@@ -5,7 +6,7 @@ public class Store implements Llvm {
    private String pointer;
    private String pointerType;
 
-   public Store(String value, String valType, String pointer, String pointerType) {
+   public Store(String valType, String value, String pointerType, String pointer) {
       this.value = value;
       this.valType = valType;
       this.pointer = pointer;

@@ -32,7 +32,7 @@ public class MiniCfgGenerator {
    public static CFGNode visitStructDecls(List<TypeDeclaration> structs, CFGNode globalBlock) {
       // Generate global instructions and add to global block
       for (TypeDeclaration struct : structs) {
-         globalBlock.addInstruction(visitStructDecl(struct));
+         globalBlock.addInstruction(new llvm.Generic(visitStructDecl(struct)));
       }
 
       return globalBlock;
@@ -63,7 +63,7 @@ public class MiniCfgGenerator {
 
       // Generate global instructions and add to global block
       for (Declaration d : decls) {
-         globalBlock.addInstruction(visitGlobalDecl(d));
+         globalBlock.addInstruction(new llvm.Generic(visitGlobalDecl(d)));
       }
 
       return globalBlock;
