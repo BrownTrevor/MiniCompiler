@@ -1,5 +1,7 @@
 package ast;
 
+import cfg.*;
+
 public class IntegerExpression
    extends AbstractExpression
 {
@@ -14,4 +16,11 @@ public class IntegerExpression
    public String getValue() {
       return this.value;
    }
+
+
+   public Value generateInstructions(CFGNode currentBlock){
+      return new Immediate("i32", value);
+   }
+
+
 }

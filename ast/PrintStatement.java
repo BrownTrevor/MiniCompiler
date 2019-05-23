@@ -1,6 +1,7 @@
 package ast;
 
 import cfg.*;
+import llvm.*;
 
 public class PrintStatement
    extends AbstractStatement
@@ -24,7 +25,8 @@ public class PrintStatement
 
 
    public CFGNode generateCFG(CFGNode currentBlock, CFGNode exitBlock) {
-      
+      Value expRes = expression.generateInstructions(currentBlock);
+
       currentBlock.addInstruction("print x");  
 
       return currentBlock;

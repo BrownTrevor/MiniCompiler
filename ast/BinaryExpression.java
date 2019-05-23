@@ -87,11 +87,12 @@ public class BinaryExpression
       Value rightVal = this.right.generateInstructions(currentBlock);
       Value leftVal = this.left.generateInstructions(currentBlock);
 
-      String llvmOp = this.operatorToLLVM();
-      String reg = Register.newRegister();
       String type = rightVal.getLlvmType();
-      String op1 = rightVal.getRegister();
-      String op2 = leftVal.getRegister();
+      Value register = new Register(type);
+      String llvmOp = this.operatorToLLVM();
+      String reg = register.getValue();
+      String op1 = rightVal.getValue();
+      String op2 = leftVal.getValue();
       Llvm instruction = null;
 
       switch (llvmOp) {
@@ -138,7 +139,7 @@ public class BinaryExpression
 
       currentBlock.addInstruction(instruction);
 
-      return new Value(type, Register.currentRegister());
+      return new Register(type);
    }
 
 

@@ -38,6 +38,10 @@ public class Struct {
       }
    }
 
+   public int getStructSize() {
+      return fields.size();
+   }
+
    public ast.Type getFieldType(String fieldName) {
       for(int i = 0; i < fields.size(); i++) {
          if (fields.get(i).getName().equals(fieldName)) {
@@ -95,6 +99,10 @@ public class Struct {
       }
 
       return s;
+   }
+
+   public String llvmType() {
+      return "%struct." + this.name + "*";
    }
 
    private static void error(String msg)

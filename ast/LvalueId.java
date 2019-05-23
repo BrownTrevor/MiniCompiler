@@ -25,11 +25,12 @@ public class LvalueId
       // type must be retrieved by the this.id
       Symbol sym = Tables.getFromSymbolTable(this.id);
       String type =  sym.getType().llvmType() + "*";
-      Llvm instruction = new Load(Register.newRegister(), type, this.id);
+      Value register = new Register(type);
+      Llvm instruction = new Load(register.getValue(), type, this.id);
 
       currentBlock.addInstruction(instruction);
 
-      return (new Value(type, Register.currentRegister()));
+      return (register);
    }
 
 }

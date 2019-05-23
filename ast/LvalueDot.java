@@ -30,18 +30,20 @@ public class LvalueDot
       String structName = leftVal.getLlvmType().substring(0, 7);
       Struct struct = Tables.getFromStructTable(structName);
       StructField target = struct.getField(this.id);
+      String type = leftVal.getLlvmType() + "*";
+
       // <result> = getelementptr <pty>* <ptrval> <ty> <idx>
 
-      String reg = Register.newRegister();
-      String type = leftVal.getLlvmType() + "*";
-      String pointer = leftVal.getRegister();
-      String index = struct.getFieldIndex(this.id);
+      Register register = new Register(type);
+      String reg = register.getValue();
+      String pointer = leftVal.getValue();
+      String index = struct.getFieldIndex(this.id) + "";
       
       Llvm instruction = new GetElementPtr(reg, type, pointer, index);
       currentBlock.addInstruction(instruction);
       
       // I'm not sure if this type is right
-      return new Value(Register.currentRegister(), leftVal.getLlvmType());
+      return register;
    }
 }
 

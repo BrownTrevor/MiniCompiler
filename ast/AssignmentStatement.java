@@ -35,7 +35,7 @@ public class AssignmentStatement
       Value target = this.target.generateInstructions(currentBlock);
       
       Llvm instruction = new llvm.Store(target.getLlvmType(), 
-         target.getRegister(), rVal.getLlvmType(), rVal.getRegister());
+         target.getValue(), rVal.getLlvmType(), rVal.getValue());
 
       currentBlock.addInstruction(instruction);
       return currentBlock;

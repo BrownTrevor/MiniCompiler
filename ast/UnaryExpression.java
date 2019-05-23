@@ -51,22 +51,23 @@ public class UnaryExpression
 
    public Value generateInstructions(CFGNode currentBlock) { 
       Value operandVal = this.operand.generateInstructions(currentBlock);
-      String instruction = Register.newRegister() + " = ";
+      String type = operandVal.getValue();
+      Register register = new Register(type);
+      String instruction = register.getValue() + " = ";
 
 
       // which operator is this?
       if(this.operator == Operator.NOT && !operandVal.getLlvmType().equals("i1")) {
-         instruction += ("xor i1 " + operandVal.getRegister() + ", 1");
+         instruction += ("xor i1 " + type + ", 1");
       }
       else if(this.operator == Operator.MINUS){
-         instruction += ("sub " + operandVal.getLlvmType() + " 0, " +
-            operandVal.getRegister());
+         instruction += ("sub " + type + " 0, " + operandVal.getValue());
       }
       else {
          System.err.println("Error: operator not defined");
          System.exit(1);
       }      
 
-      return new Value(operandVal.getLlvmType(), Register.currentRegister());
+      return new Register(operandVal.getLlvmType());
    }
 }

@@ -22,6 +22,6 @@ public class StructType
    }
 
    public String llvmType() {
-      return "pointer of some sort";
+      return "%struct." + this.name + "*";
    }
 }

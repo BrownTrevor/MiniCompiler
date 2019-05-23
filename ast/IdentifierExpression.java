@@ -1,5 +1,7 @@
 package ast;
 
+import cfg.*;
+
 public class IdentifierExpression
    extends AbstractExpression
 {
@@ -13,5 +15,9 @@ public class IdentifierExpression
 
    public String getId() {
       return this.id;
+   }
+
+   public Value generateInstructions(CFGNode currentBlock) {
+      return null;
    }
 }
