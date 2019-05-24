@@ -1,6 +1,8 @@
 package ast;
 
-import java.util.List;
+import java.util.*;
+import cfg.*;
+import llvm.*;
 
 public class InvocationExpression
    extends AbstractExpression
@@ -22,5 +24,39 @@ public class InvocationExpression
 
    public List<Expression> getArguments() {
       return this.arguments;
+   }
+
+   public Value generateInstructions(CFGNode currentBlock) {
+      //call i32 @ackermann(i32 %u107, i32 %u109)
+
+      Symbol functionSymbol = Tables.getFromSymbolTable(this.name);
+      Type functionType = functionSymbol.getType();
+
+      if (!(functionType instanceof Function)){
+         System.err.println("Error: found a symbol that is not a function");
+         System.exit(1);
+      }
+     
+      Function function = (Function) functionType;
+      String retString = function.getRetType().llvmType();
+      String funcName = function.getName();
+      List<String> list = parseExpressionList(currentBlock);
+      Value reg = new Register(retString);
+
+      Llvm invoc = new Call(reg.getValue(), funcName, retString, list);
+     
+      return reg;
+   }
+
+   private List<String> parseExpressionList(CFGNode currentBlock) {
+      List<String> list = new ArrayList<String>();
+
+      for (Expression e : this.arguments) {
+         Value v = e.generateInstructions(currentBlock);
+
+         list.add(v.getLlvmType() + " " + v.getValue());
+      }
+
+      return list;
    }
 }

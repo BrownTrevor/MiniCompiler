@@ -1,5 +1,8 @@
 package ast;
 
+import cfg.*;
+import llvm.*;
+
 public class ReturnEmptyStatement
    extends AbstractStatement
 {
@@ -11,5 +14,15 @@ public class ReturnEmptyStatement
    @Override
    public String toString() {
       return "Empty statement";
+   }
+
+   
+   
+   public CFGNode generateCFG(CFGNode currentBlock, CFGNode exitBlock) {
+      String exitLabel = exitBlock.getLabel();
+      Llvm branch = new Bru(exitLabel);
+      currentBlock.addInstruction(branch);  
+
+      return currentBlock;
    }
 }

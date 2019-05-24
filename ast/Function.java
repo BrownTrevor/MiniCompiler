@@ -25,6 +25,10 @@ public class Function implements Type
       this.body = body;
    }
 
+   public Type getRetType() {
+      return this.retType;
+   }
+
    public String getName() {
       return this.name;
    }

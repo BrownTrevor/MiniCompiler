@@ -1,5 +1,8 @@
 package ast;
 
+import cfg.*;
+import llvm.*;
+
 public class ReturnStatement
    extends AbstractStatement
 {
@@ -18,5 +21,19 @@ public class ReturnStatement
    @Override
    public String toString() {
       return "Return statement";
+   }
+
+   public CFGNode generateCFG(CFGNode currentBlock, CFGNode exitBlock) {
+      Value expRes = expression.generateInstructions(currentBlock);
+      String exitLabel = exitBlock.getLabel();
+
+      Llvm store = new Store(expRes.getLlvmType(), expRes.getValue(), 
+            expRes.getLlvmType() + "*", "%_retval_");
+      Llvm branch = new Bru(exitLabel);
+
+      currentBlock.addInstruction(store);
+      currentBlock.addInstruction(branch);
+
+      return currentBlock;
    }
 }
