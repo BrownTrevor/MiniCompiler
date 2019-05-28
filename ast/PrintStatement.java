@@ -27,7 +27,12 @@ public class PrintStatement
    public CFGNode generateCFG(CFGNode currentBlock, CFGNode exitBlock) {
       Value expRes = expression.generateInstructions(currentBlock);
 
-      currentBlock.addInstruction("print x");  
+      String instruction = "call i32 (i8*, ...)* @printf(i8* getelementptr " 
+         + "inbounds ([5 x i8]* @.println, i32 0, i32 0), i32 " 
+         + expRes.getValue() + ")";
+
+      Llvm print = new Generic(instruction);
+      currentBlock.addInstruction(print);  
 
       return currentBlock;
    }

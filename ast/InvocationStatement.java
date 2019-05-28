@@ -24,14 +24,11 @@ public class InvocationStatement
       return "Invocation statement";
    }
 
-   /*
+  
    public CFGNode generateCFG(CFGNode currentBlock, CFGNode exitBlock) {
-      Value expRes = expression.generateInstructions(currentBlock);
-// %u110 = call i32 @ackermann(i32 %u107, i32 %u109)
-
-      currentBlock.addInstruction("print x");
+      Value expRes = this.expression.generateInstructions(currentBlock);
 
       return currentBlock;
    }
-   */
+   
 }
