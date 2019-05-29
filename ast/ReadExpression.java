@@ -14,11 +14,12 @@ public class ReadExpression
 
    public Value generateInstructions(CFGNode currentBlock) {
 
-      String instruction = " call i32 (i8*, ...)* @scanf(i8* getelementptr inbounds ([4 x i8]* @.read, i32 0, i32 0), i32* %a)";
+      Value reg = new Register("i32");
+      String instruction = reg.getValue() +  "= call i32 @read()";
 
       Llvm print = new Generic(instruction);
       currentBlock.addInstruction(print);
 
-      return null;
+      return reg;
    }
 }

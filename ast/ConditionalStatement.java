@@ -1,6 +1,7 @@
 package ast;
 
 import cfg.*;
+import llvm.*;
 
 public class ConditionalStatement
    extends AbstractStatement
@@ -37,11 +38,17 @@ public class ConditionalStatement
    
    public CFGNode generateCFG(CFGNode currentBlock, CFGNode exitBlock) {
       // TODO: make instructions for the guard and add to current block
+      // br i1 %u97, label %LU43, label %LU45
+
+      Value guardVal = guard.generateInstructions(currentBlock);
 
       CFGNode thenBlock = new CFGNode();
-      CFGNode thenResBlock = this.thenBlock.generateCFG(thenBlock, exitBlock);
-
       CFGNode elseBlock = new CFGNode();
+
+      Llvm branch = new Br(guardVal.getValue(), thenBlock.getLabel(), elseBlock.getLabel());
+      currentBlock.addInstruction(branch);
+
+      CFGNode thenResBlock = this.thenBlock.generateCFG(thenBlock, exitBlock);
       CFGNode elseResBlock = this.elseBlock.generateCFG(elseBlock, exitBlock);
 
       CFGNode joinBlock = new CFGNode();

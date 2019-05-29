@@ -8,8 +8,8 @@ public class StructField {
    private ast.Type type;
 
    public StructField(String name, ast.Type type) {
-      name = this.name;
-      type = this.type;
+      this.name = name;
+      this.type = type;
    }
 
    public String getName() {

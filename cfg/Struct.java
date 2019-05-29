@@ -7,6 +7,10 @@ public class Struct {
    private ArrayList<StructField> fields;
 
    public Struct(String name) {
+      if(name == null) {
+         name = "null";
+      }
+
       this.name = name;
       this.fields = new ArrayList<StructField>();
    }
@@ -21,7 +25,7 @@ public class Struct {
    }
 
    public void addField(String fieldName, ast.Type fieldType) {
-      if (getFieldWithoutErrorCheck(fieldName) == null) {
+      if (!this.containsField(fieldName)) {
          this.fields.add(new StructField(fieldName, fieldType));
       }
       else {
@@ -111,12 +115,15 @@ public class Struct {
       System.exit(1);
    }
 
-   private StructField getFieldWithoutErrorCheck(String fieldName) {
+   private boolean containsField(String fieldName) {
       for (int i = 0; i < fields.size(); i++) {
          if (fields.get(i).getName().equals(fieldName)) {
-            return fields.get(i);
+            return true;
          }
       }
-      return null;
+      return false;
    }
+
+
+   
 }
