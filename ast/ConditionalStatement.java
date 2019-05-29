@@ -37,7 +37,6 @@ public class ConditionalStatement
    }
    
    public CFGNode generateCFG(CFGNode currentBlock, CFGNode exitBlock) {
-      // TODO: make instructions for the guard and add to current block
       // br i1 %u97, label %LU43, label %LU45
 
       Value guardVal = guard.generateInstructions(currentBlock);
@@ -45,7 +44,8 @@ public class ConditionalStatement
       CFGNode thenBlock = new CFGNode();
       CFGNode elseBlock = new CFGNode();
 
-      Llvm branch = new Br(guardVal.getValue(), thenBlock.getLabel(), elseBlock.getLabel());
+      Llvm branch = new Br(guardVal.getValue(), thenBlock.getLabel().getId(),
+       elseBlock.getLabel().getId());
       currentBlock.addInstruction(branch);
 
       CFGNode thenResBlock = this.thenBlock.generateCFG(thenBlock, exitBlock);

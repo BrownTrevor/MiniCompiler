@@ -91,6 +91,10 @@ public class MiniCfgGenerator {
       }
    }
 
+   public static List<CFGNode> getCfgList() {
+      return cfgList;
+   }
+
    // Converts Type objects to llvm strings
    private static String typeToLlvmStr(Type t) {
       if (t instanceof BoolType) {

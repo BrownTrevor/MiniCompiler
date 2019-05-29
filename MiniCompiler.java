@@ -3,6 +3,7 @@ import org.antlr.v4.runtime.tree.*;
 
 import java.io.*;
 import javax.json.JsonValue;
+import java.util.*;
 
 public class MiniCompiler
 {
@@ -40,6 +41,14 @@ public class MiniCompiler
          MiniTypeChecker typeChecker =
             new MiniTypeChecker();
          typeChecker.visit(program);
+
+         MiniCfgGenerator.generateCFG(program);
+         List<cfg.CFGNode> cfgList = MiniCfgGenerator.getCfgList();
+         for (cfg.CFGNode cfg : cfgList) {
+            System.out.println("NEW BLOCK");
+            System.out.println(cfg.toString());
+            System.out.println("END BLOCK");
+         }
       }
    }
 

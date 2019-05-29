@@ -107,6 +107,10 @@ public class Tables {
       structTable = struct;
    }
 
+   public static StructTable getStructTable(){
+      return structTable;
+   }
+
    public static void initStructTable() {
       structTable = new StructTable();
    }

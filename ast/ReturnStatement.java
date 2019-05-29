@@ -25,7 +25,7 @@ public class ReturnStatement
 
    public CFGNode generateCFG(CFGNode currentBlock, CFGNode exitBlock) {
       Value expRes = expression.generateInstructions(currentBlock);
-      String exitLabel = exitBlock.getLabel();
+      String exitLabel = exitBlock.getLabel().getId();
 
       Llvm store = new Store(expRes.getLlvmType(), expRes.getValue(), 
             expRes.getLlvmType() + "*", "%_retval_");

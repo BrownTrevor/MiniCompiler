@@ -19,7 +19,7 @@ public class ReturnEmptyStatement
    
    
    public CFGNode generateCFG(CFGNode currentBlock, CFGNode exitBlock) {
-      String exitLabel = exitBlock.getLabel();
+      String exitLabel = exitBlock.getLabel().getId();
       Llvm branch = new Bru(exitLabel);
       currentBlock.addInstruction(branch);  
 

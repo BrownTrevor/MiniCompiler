@@ -19,8 +19,8 @@ public class Register implements Value {
    
    public Register(String t) {
       registerNumber++;
-      llvmType = t;
-      register = "%u" + registerNumber;
+      this.llvmType = t;
+      this.register = "%u" + registerNumber;
    }
 
    public String getLlvmType() {
@@ -33,6 +33,11 @@ public class Register implements Value {
 
    public boolean isRegister() {
       return true;
+   }
+
+   @Override
+   public String toString() {
+      return "Type: " + llvmType + "\nValue: " + register;
    }
    
 }

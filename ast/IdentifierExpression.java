@@ -1,6 +1,7 @@
 package ast;
 
 import cfg.*;
+import llvm.*;
 
 public class IdentifierExpression
    extends AbstractExpression
@@ -18,6 +19,13 @@ public class IdentifierExpression
    }
 
    public Value generateInstructions(CFGNode currentBlock) {
-      return null;
+      Symbol sym = Tables.getFromSymbolTable(id);
+      String type = sym.getType().llvmType();
+      Value reg = new Register(type);
+
+      Llvm load = new Load(reg.getValue(), type, sym.getName());
+      currentBlock.addInstruction(load);
+      
+      return reg;
    }
 }

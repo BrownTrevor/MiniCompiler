@@ -6,8 +6,8 @@ public class Immediate implements Value{
    private String immediate;
 
    public Immediate(String t, String i) {
-      llvmType = t;
-      immediate = i;
+      this.llvmType = t;
+      this.immediate = i;
    }
 
    public String getValue() {
@@ -20,6 +20,11 @@ public class Immediate implements Value{
 
    public boolean isRegister(){
       return false;
+   }
+
+   @Override
+   public String toString() {
+      return "Type: " + llvmType + "\nValue: " + immediate;
    }
 
 }

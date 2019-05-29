@@ -1,6 +1,7 @@
 package ast;
 
 import cfg.*;
+import llvm.*;
 
 public class WhileStatement
    extends AbstractStatement
@@ -29,11 +30,15 @@ public class WhileStatement
    }
 
    public CFGNode generateCFG(CFGNode currentBlock, CFGNode exitBlock) {
-      // TODO: make instructions for the guard and add to current block
+
+      Value guardVal = guard.generateInstructions(currentBlock);
 
       CFGNode conditionalBlock = new CFGNode();
       CFGNode bodyBlock = new CFGNode();
       CFGNode joinBlock = new CFGNode();
+
+      Llvm branch = new Br(guardVal.getValue(), bodyBlock.getLabel().getId(), joinBlock.getLabel().getId());
+      currentBlock.addInstruction(branch);
 
       currentBlock.addChild(conditionalBlock);
       conditionalBlock.addChild(bodyBlock);
