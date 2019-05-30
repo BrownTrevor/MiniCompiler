@@ -24,7 +24,7 @@ public class MiniTypeChecker {
       this.visitMainFunction();
 
 
-      //System.out.println(this.structTables.toString());
+      System.out.println("Type Checking Completed");
       //System.out.println(this.symbolTables.toString());
    }
 
@@ -84,7 +84,7 @@ public class MiniTypeChecker {
 
       this.visitDeclarationList(func.getParams()); // List<Declaration>
       this.visitDeclarationList(func.getLocals()); // List<Declaration>
-      System.out.println("visiting function: " + func.getName());
+
       ast.Type retType = this.visitStatement(func.getBody(), func.getType()); // Statement
 
       if(!(this.isSameType(retType, func.getType()))) {

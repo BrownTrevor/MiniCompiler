@@ -57,7 +57,7 @@ public class Tables {
       }
 
       if (topSymbol == null) {
-         error("Cannot retrieve symbol: " + symbolName + " because it does not exist");
+         error("Tables - Cannot retrieve symbol: " + symbolName + " because it does not exist");
       }
 
       return topSymbol;

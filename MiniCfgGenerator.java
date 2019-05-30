@@ -83,7 +83,7 @@ public class MiniCfgGenerator {
    // Visit all functions
    public static void visitFunctions(List<Function> funcs) {
       for (Function f : funcs) {
-         //TODO: Verify table pushing and poping is the right move here
+         Symbol newSymbol = new Symbol(f.getName(), f);
          Tables.pushSymbolTable();
          CFGNode functionNode = f.generateCFG();
          cfgList.add(functionNode);
