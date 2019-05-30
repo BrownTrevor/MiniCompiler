@@ -38,16 +38,16 @@ public class MiniCompiler
             new MiniToAstProgramVisitor();
          ast.Program program = programVisitor.visit(tree);
 
+         /*
          MiniTypeChecker typeChecker =
             new MiniTypeChecker();
          typeChecker.visit(program);
+         */
 
          MiniCfgGenerator.generateCFG(program);
          List<cfg.CFGNode> cfgList = MiniCfgGenerator.getCfgList();
          for (cfg.CFGNode cfg : cfgList) {
-            System.out.println("NEW BLOCK");
             System.out.println(cfg.toString());
-            System.out.println("END BLOCK");
          }
       }
    }

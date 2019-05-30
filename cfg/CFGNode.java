@@ -46,7 +46,14 @@ public class CFGNode {
          CFGNode current = queue.remove(0);
          seen.add(current);
 
-         sb.append(current.getLabel().getId());
+         sb.append(current.getLabel().getId() + ":\n");
+         
+         List<Llvm> currentInstructions = current.getInstructions();
+         for (Llvm instruction : currentInstructions) {
+            sb.append(instruction.toString());
+            sb.append("\n");
+         }
+
          sb.append("\n");
 
          for (CFGNode child : current.getChildren()) {

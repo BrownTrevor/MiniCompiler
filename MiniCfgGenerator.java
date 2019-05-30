@@ -43,14 +43,14 @@ public class MiniCfgGenerator {
       // instruction example: %struct.A = type{i32, i32}
       String instruction = "%struct.";
       instruction += decl.getName();
-      instruction += "type{ ";
+      instruction += "type{";
 
       for (Declaration d : decl.getFields()) {
          instruction += (d.getType().llvmType() + ", ");
       }
 
       // Trim the extra comma and the closing bracket
-      instruction = instruction.substring(0, instruction.length() - 1) + "}";
+      instruction = instruction.substring(0, instruction.length() - 2) + "}";
 
       Struct struct = new Struct(decl);
       Tables.addToStructTable(struct); 
@@ -71,7 +71,7 @@ public class MiniCfgGenerator {
 
    // Visit a single decl and generate the instruction
    public static  String visitGlobalDecl(Declaration d) {
-      String instruction = "%global" + d.getName() + " external global ";
+      String instruction = "@" + d.getName() + " = common global ";
       instruction += d.getType().llvmType();
 
       Symbol newSymbol = new Symbol(d);
@@ -84,7 +84,6 @@ public class MiniCfgGenerator {
    public static void visitFunctions(List<Function> funcs) {
       for (Function f : funcs) {
          Tables.addToSymbolTable(new Symbol(f.getName(), f));
-
          Tables.pushSymbolTable();
          CFGNode functionNode = f.generateCFG();
          cfgList.add(functionNode);
