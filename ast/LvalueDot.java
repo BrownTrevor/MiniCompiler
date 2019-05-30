@@ -27,7 +27,8 @@ public class LvalueDot
 
    public Value generateInstructions(CFGNode currentBlock) {
       Value leftVal = left.generateInstructions(currentBlock);
-      String structName = leftVal.getLlvmType().substring(0, 7);
+      String structType = leftVal.getLlvmType();
+      String structName = structType.substring(8, structType.length() - 1);
       Struct struct = Tables.getFromStructTable(structName);
       StructField target = struct.getField(this.id);
       String type = leftVal.getLlvmType() + "*";

@@ -28,6 +28,8 @@ public class DotExpression
       Value lValue = left.generateInstructions(currentBlock);
       String structType = lValue.getLlvmType();
       String structName = structType.substring(8, structType.length()-1);
+      //System.out.println("SN:  " + structName);
+
       Struct struct = Tables.getFromStructTable(structName);
       String offset = struct.getFieldIndex(this.id) + "";
       String elementType = struct.getFieldType(this.id).llvmType();

@@ -46,7 +46,7 @@ public class MiniCfgGenerator {
       instruction += "type{ ";
 
       for (Declaration d : decl.getFields()) {
-         instruction += (typeToLlvmStr(d.getType()) + ", ");
+         instruction += (d.getType().llvmType() + ", ");
       }
 
       // Trim the extra comma and the closing bracket
@@ -72,7 +72,7 @@ public class MiniCfgGenerator {
    // Visit a single decl and generate the instruction
    public static  String visitGlobalDecl(Declaration d) {
       String instruction = "%global" + d.getName() + " external global ";
-      instruction += typeToLlvmStr(d.getType());
+      instruction += d.getType().llvmType();
 
       Symbol newSymbol = new Symbol(d);
       Tables.addToSymbolTable(newSymbol);
@@ -94,28 +94,6 @@ public class MiniCfgGenerator {
 
    public static List<CFGNode> getCfgList() {
       return cfgList;
-   }
-
-   // Converts Type objects to llvm strings
-   private static String typeToLlvmStr(Type t) {
-      if (t instanceof BoolType) {
-         return "i32";
-      } else if (t instanceof IntType) {
-         return "i32";
-      } else if (t instanceof NullType) {
-         return "maybe void?";
-      } else if (t instanceof StructType) {
-         // might be a space instead of a period after struct
-         StructType st = (StructType) t;
-         return "%struct." + st.getName() + "*";
-      } else if (t instanceof VoidType) {
-         return "void";
-      } else {
-         System.out.println("ERROR: Invalid type to string conversion");
-         System.exit(1);
-      }
-      // my ide didn't like that i didnt have a ret stmt here
-      return "shouldn't have gotten here: typeToLLVMstr";
    }
 
 }
