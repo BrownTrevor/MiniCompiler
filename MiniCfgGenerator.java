@@ -83,7 +83,8 @@ public class MiniCfgGenerator {
    // Visit all functions
    public static void visitFunctions(List<Function> funcs) {
       for (Function f : funcs) {
-         Symbol newSymbol = new Symbol(f.getName(), f);
+         Tables.addToSymbolTable(new Symbol(f.getName(), f));
+
          Tables.pushSymbolTable();
          CFGNode functionNode = f.generateCFG();
          cfgList.add(functionNode);

@@ -102,6 +102,7 @@ public class Function implements Type
    private CFGNode visitFunctionParams(List<Declaration> params, CFGNode current) {
 
       for (Declaration d : params) {
+         Tables.addToSymbolTable(new Symbol(d));
          current.addInstruction(this.paramAllocToInstruction(d));
       }
 
@@ -130,6 +131,7 @@ public class Function implements Type
    private CFGNode visitFunctionDecls(List<Declaration> decls, CFGNode current) {
 
       for (Declaration d : decls) {
+         Tables.addToSymbolTable(new Symbol(d));
          current.addInstruction(this.visitFunctionDecl(d));
       }
 
