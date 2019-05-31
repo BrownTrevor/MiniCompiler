@@ -71,7 +71,24 @@ public class MiniCompiler
             }
          }
 
-         System.out.println(sb.toString());
+         /*
+          * Add in declarations
+          */
+
+         sb.append("declare i8* @malloc(i32)\n");
+         sb.append("declare void @free(i8*)\n");
+         sb.append("declare i8 @read()\n");
+         sb.append("declare void @print(i8)\n");
+         sb.append("declare void @println(i8)");
+
+         /*
+          * Write to file: `output.ll`
+          */
+         try (PrintWriter out = new PrintWriter("output.ll")) {
+            out.println(sb.toString());
+         }
+         catch (FileNotFoundException e) {
+         }
       }
    }
 
