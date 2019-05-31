@@ -11,6 +11,6 @@ public class FalseExpression
    }
 
    public Value generateInstructions(CFGNode current) {
-      return new Immediate("i1", "0");
+      return new Immediate("i32", "0");
    }
 }

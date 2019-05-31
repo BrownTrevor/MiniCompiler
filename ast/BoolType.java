@@ -9,6 +9,6 @@ public class BoolType
    }
 
    public String llvmType() {
-      return "i1";
+      return "i32";
    }
 }

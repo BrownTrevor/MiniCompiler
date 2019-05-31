@@ -139,7 +139,7 @@ public class BinaryExpression
 
       currentBlock.addInstruction(instruction);
 
-      return new Register(type);
+      return register;
    }
 
 
