@@ -41,10 +41,10 @@ public class WhileStatement
       conditionalBlock.addInstruction(branch);
 
       CFGNode bodyBlockRes = this.body.generateCFG(bodyBlock, exitBlock);
-      Llvm loop = new Br(guardVal.getValue(), bodyBlock.getLabel().getId(), joinBlock.getLabel().getId());
+      Llvm loop = new Bru(conditionalBlock.getLabel().getId());
+      
       conditionalBlock.addInstruction(branch);
       bodyBlockRes.addInstruction(loop);
-
 
       currentBlock.addChild(conditionalBlock);
       conditionalBlock.addChild(bodyBlock);
