@@ -42,7 +42,7 @@ public class WhileStatement
 
       CFGNode bodyBlockRes = this.body.generateCFG(bodyBlock, exitBlock);
       Llvm loop = new Bru(conditionalBlock.getLabel().getId());
-      
+
       conditionalBlock.addInstruction(branch);
       bodyBlockRes.addInstruction(loop);
 

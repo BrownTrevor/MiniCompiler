@@ -46,9 +46,31 @@ public class MiniCompiler
 
          MiniCfgGenerator.generateCFG(program);
          List<cfg.CFGNode> cfgList = MiniCfgGenerator.getCfgList();
-         for (cfg.CFGNode cfg : cfgList) {
-            System.out.println(cfg.toString());
+
+         HashSet<cfg.CFGNode> seen = new HashSet<cfg.CFGNode>();
+         ArrayList<cfg.CFGNode> queue = new ArrayList<cfg.CFGNode>();
+         StringBuilder sb = new StringBuilder();
+
+         for (cfg.CFGNode tmp : cfgList) {
+            if (!(seen.contains(tmp))) {
+               seen.add(tmp);
+               queue.add(tmp);
+            }
          }
+         while (!(queue.isEmpty())) {
+            cfg.CFGNode current = queue.remove(0);
+
+            sb.append(current.toString());
+
+            for (cfg.CFGNode child : current.getChildren()) {
+               if (!(seen.contains(child))) {
+                  seen.add(child);
+                  queue.add(child);
+               }
+            }
+         }
+
+         System.out.println(sb.toString());
       }
    }
 
