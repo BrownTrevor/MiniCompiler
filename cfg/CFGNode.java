@@ -7,11 +7,13 @@ public class CFGNode {
    private ArrayList<CFGNode> children;
    private ArrayList<Llvm> instructions;
    private Label label;
+   private String header;
 
    public CFGNode() {
       this.label = new Label();
       children = new ArrayList<CFGNode>();
       instructions = new ArrayList<Llvm>();
+      header = null;
    }
 
    public void addChild(CFGNode node) {
@@ -34,6 +36,21 @@ public class CFGNode {
       return this.label;
    } 
 
+   public void setHeader(String header) {
+      this.header = header;
+   }
+
+   public boolean hasHeader() {
+      if(header == null) {
+         return false;
+      }
+      return true;
+   }
+
+   public String getHeader() {
+      return this.header;
+   }
+
 
    @Override
    public String toString() {
@@ -46,10 +63,15 @@ public class CFGNode {
          CFGNode current = queue.remove(0);
          seen.add(current);
 
+         if(current.hasHeader()) {
+            sb.append(current.getHeader());
+         }
+
          sb.append(current.getLabel().getId() + ":\n");
          
          List<Llvm> currentInstructions = current.getInstructions();
          for (Llvm instruction : currentInstructions) {
+            sb.append("\t");
             sb.append(instruction.toString());
             sb.append("\n");
          }

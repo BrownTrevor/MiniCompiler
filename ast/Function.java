@@ -71,30 +71,46 @@ public class Function implements Type
 
    public CFGNode generateCFG() {
       CFGNode rootBlock = new CFGNode();
-      CFGNode exitBlock = new CFGNode(); // TODO: setup exit instructions
+      CFGNode exitBlock = new CFGNode();
 
       String functionDeclStr = getFunctionDeclStr();
       String retInstr = "%retval = alloca " + retType.llvmType();
 
-      rootBlock.addInstruction(new llvm.Generic(functionDeclStr));
+      rootBlock.setHeader(functionDeclStr);
       rootBlock.addInstruction(new llvm.Generic(retInstr));
       rootBlock = this.visitFunctionParams(params, rootBlock);
       rootBlock = this.visitFunctionDecls(locals, rootBlock);
 
       CFGNode lastBlock = this.body.generateCFG(rootBlock, exitBlock);
 
+      if (this.retType.llvmType().equals("void")) {
+         exitBlock.addInstruction(new RetVoid());
+      }
+      else {
+         String rtype = this.retType.llvmType();
+         Value reg = new Register(rtype);
+         exitBlock.addInstruction(new Load(reg.getValue(), rtype + "*", "%_retval_"));
+         exitBlock.addInstruction(new Ret(rtype, reg.getValue()));
+      }
+
+      lastBlock.addChild(exitBlock);
+
       return rootBlock;
    }
 
    private String getFunctionDeclStr() {
       
-      String instruction = "define " + retType.llvmType() + " @" + this.getName() + "( ";
+      String instruction = "define " + retType.llvmType() + " @" + this.getName() + "(";
 
       for (Declaration d : params) {
-         instruction += (d.getType().llvmType() + " %p_" + d.getName() + ", ");
+         instruction += (d.getType().llvmType() + " %_p_" + d.getName() + ", ");
       }
 
-      instruction = instruction.substring(0, instruction.length() - 2) + ")";
+      if (params.size() >0 ){
+         instruction = instruction.substring(0, instruction.length() - 2);
+      }
+      instruction += ")\n";
+
 
       return instruction;
    }
@@ -114,7 +130,7 @@ public class Function implements Type
    }
 
    private Llvm paramAllocToInstruction(Declaration d) {
-      return new llvm.Alloca(d.getName(), d.getType().llvmType());
+      return new llvm.Alloca("%" + d.getName(), d.getType().llvmType());
    }
 
    private Llvm paramStoreToInstruction(Declaration d) {
@@ -139,7 +155,7 @@ public class Function implements Type
    }
 
    private Llvm visitFunctionDecl(Declaration d) {
-      return new llvm.Alloca(d.getName(), d.getType().llvmType());
+      return new llvm.Alloca("%" + d.getName(), d.getType().llvmType());
       // "%" + d.getName() + " = alloca " + typeToLlvmStr(d.getType());
    }
 

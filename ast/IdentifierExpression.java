@@ -23,7 +23,7 @@ public class IdentifierExpression
       String type = sym.getType().llvmType();
       Value reg = new Register(type);
 
-      Llvm load = new Load(reg.getValue(), type, sym.getName());
+      Llvm load = new Load(reg.getValue(), type, "%" + sym.getName());
       currentBlock.addInstruction(load);
       
       return reg;

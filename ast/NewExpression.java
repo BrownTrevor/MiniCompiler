@@ -24,13 +24,13 @@ public class NewExpression
        * %u14 = bitcast i8* %u13 to %struct.simple*
        */
       Struct struct = Tables.getFromStructTable(id);
-      String size = struct.getStructSize() + "";
+      String size = (struct.getStructSize()*4) + "";
       String structType = struct.llvmType();
 
       Value mallocReg = new Register("i8*");
       Value bitcastReg = new Register(structType);
 
-      Llvm malloc = new Generic("call i8* @malloc(i32 4 " + size + ") ");
+      Llvm malloc = new Generic(mallocReg.getValue() + " = call i8* @malloc(i32 " + size + ") ");
       Llvm bitcast = new BitCast(bitcastReg.getValue(), "i8*", 
          mallocReg.getValue(), structType);
 

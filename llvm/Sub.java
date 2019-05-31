@@ -32,6 +32,6 @@ public class Sub implements Llvm, LlvmArithmetic {
 
    @Override
    public String toString() {
-      return target + " = sub\t" + type + " " + op1 + ", " + op2;
+      return target + " = sub " + type + " " + op1 + ", " + op2;
    }
 }

@@ -52,6 +52,10 @@ public class ConditionalStatement
       CFGNode elseResBlock = this.elseBlock.generateCFG(elseBlock, exitBlock);
 
       CFGNode joinBlock = new CFGNode();
+      Llvm joinInstr = new Bru(joinBlock.getLabel().getId());
+      thenResBlock.addInstruction(joinInstr);
+      elseResBlock.addInstruction(joinInstr);
+
       thenResBlock.addChild(joinBlock);
       elseResBlock.addChild(joinBlock);
 

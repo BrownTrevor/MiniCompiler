@@ -30,15 +30,21 @@ public class WhileStatement
    }
 
    public CFGNode generateCFG(CFGNode currentBlock, CFGNode exitBlock) {
-
-      Value guardVal = guard.generateInstructions(currentBlock);
-
+      // TODO: fix this
       CFGNode conditionalBlock = new CFGNode();
       CFGNode bodyBlock = new CFGNode();
       CFGNode joinBlock = new CFGNode();
 
+      Value guardVal = guard.generateInstructions(conditionalBlock);
+
       Llvm branch = new Br(guardVal.getValue(), bodyBlock.getLabel().getId(), joinBlock.getLabel().getId());
-      currentBlock.addInstruction(branch);
+      conditionalBlock.addInstruction(branch);
+
+      CFGNode bodyBlockRes = this.body.generateCFG(bodyBlock, exitBlock);
+      Llvm loop = new Br(guardVal.getValue(), bodyBlock.getLabel().getId(), joinBlock.getLabel().getId());
+      conditionalBlock.addInstruction(branch);
+      bodyBlockRes.addInstruction(loop);
+
 
       currentBlock.addChild(conditionalBlock);
       conditionalBlock.addChild(bodyBlock);

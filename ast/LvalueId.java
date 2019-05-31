@@ -26,7 +26,7 @@ public class LvalueId
       Symbol sym = Tables.getFromSymbolTable(this.id);
       String type =  sym.getType().llvmType() + "*";
       Value register = new Register(type);
-      Llvm instruction = new Load(register.getValue(), type, this.id);
+      Llvm instruction = new Load(register.getValue(), type, "%" + this.id);
 
       currentBlock.addInstruction(instruction);
 

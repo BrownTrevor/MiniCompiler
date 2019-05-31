@@ -15,7 +15,7 @@ public class ReadExpression
    public Value generateInstructions(CFGNode currentBlock) {
 
       Value reg = new Register("i32");
-      String instruction = reg.getValue() +  "= call i32 @read()";
+      String instruction = reg.getValue() +  " = call i32 @read()";
 
       Llvm print = new Generic(instruction);
       currentBlock.addInstruction(print);
