@@ -74,10 +74,13 @@ public class Function implements Type
       CFGNode exitBlock = new CFGNode();
 
       String functionDeclStr = getFunctionDeclStr();
-      String retInstr = "%retval = alloca " + retType.llvmType();
-
       rootBlock.setHeader(functionDeclStr);
-      rootBlock.addInstruction(new llvm.Generic(retInstr));
+
+      if(!this.retType.llvmType().equals("void")){
+         String retInstr = "%retval = alloca " + retType.llvmType();
+         rootBlock.addInstruction(new llvm.Generic(retInstr));
+      }
+
       rootBlock = this.visitFunctionParams(params, rootBlock);
       rootBlock = this.visitFunctionDecls(locals, rootBlock);
 
@@ -134,9 +137,9 @@ public class Function implements Type
    }
 
    private Llvm paramStoreToInstruction(Declaration d) {
-      String localType = d.getType().llvmType();
+      String localType = d.getType().llvmType() + "*";
       String localName = "%" + d.getName();
-      String paramType = d.getType().llvmType() + "*";
+      String paramType = d.getType().llvmType();
       String paramName = "%_p_" + d.getName();
 
       return new llvm.Store(paramType, paramName, localType, localName);

@@ -23,6 +23,7 @@ public class NewExpression
        * %u13 = call i8* @malloc(i32 4) 
        * %u14 = bitcast i8* %u13 to %struct.simple*
        */
+
       Struct struct = Tables.getFromStructTable(id);
       String size = (struct.getStructSize()*4) + "";
       String structType = struct.llvmType();

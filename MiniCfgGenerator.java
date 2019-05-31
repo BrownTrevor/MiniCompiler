@@ -72,12 +72,21 @@ public class MiniCfgGenerator {
    // Visit a single decl and generate the instruction
    public static  String visitGlobalDecl(Declaration d) {
       String instruction = "@" + d.getName() + " = common global ";
-      instruction += d.getType().llvmType();
-
+      String llvmType = d.getType().llvmType();
+      instruction += (llvmType + " ");
+      instruction += typeToDefaultValue(llvmType);
+      instruction += ", align 4";
       Symbol newSymbol = new Symbol(d);
       Tables.addToSymbolTable(newSymbol);
 
       return instruction;
+   }
+
+   private static String typeToDefaultValue(String type) {
+      if(type.contains("*")) {
+         return "null"; 
+      }
+      return "i32";
    }
 
    // Visit all functions
