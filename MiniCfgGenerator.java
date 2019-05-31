@@ -43,7 +43,7 @@ public class MiniCfgGenerator {
       // instruction example: %struct.A = type{i32, i32}
       String instruction = "%struct.";
       instruction += decl.getName();
-      instruction += "type{";
+      instruction += " = type{";
 
       for (Declaration d : decl.getFields()) {
          instruction += (d.getType().llvmType() + ", ");

@@ -51,21 +51,22 @@ public class MiniCompiler
          ArrayList<cfg.CFGNode> queue = new ArrayList<cfg.CFGNode>();
          StringBuilder sb = new StringBuilder();
 
-         for (cfg.CFGNode tmp : cfgList) {
-            if (!(seen.contains(tmp))) {
-               seen.add(tmp);
-               queue.add(tmp);
+         for (cfg.CFGNode topCfg : cfgList) {
+            if (!(seen.contains(topCfg))) {
+               seen.add(topCfg);
+               queue.add(topCfg);
             }
-         }
-         while (!(queue.isEmpty())) {
-            cfg.CFGNode current = queue.remove(0);
 
-            sb.append(current.toString());
+            while (!(queue.isEmpty())) {
+               cfg.CFGNode current = queue.remove(0);
 
-            for (cfg.CFGNode child : current.getChildren()) {
-               if (!(seen.contains(child))) {
-                  seen.add(child);
-                  queue.add(child);
+               sb.append(current.toString());
+
+               for (cfg.CFGNode child : current.getChildren()) {
+                  if (!(seen.contains(child))) {
+                     seen.add(child);
+                     queue.add(child);
+                  }
                }
             }
          }
