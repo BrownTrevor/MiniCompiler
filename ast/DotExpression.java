@@ -27,8 +27,8 @@ public class DotExpression
    public Value generateInstructions(CFGNode currentBlock) {
       Value lValue = left.generateInstructions(currentBlock);
       String structType = lValue.getLlvmType();
-      String structName = structType.substring(8, structType.length()-1);
-      //System.out.println("SN:  " + structName);
+      String structName = structNameFromLlvmType(structType);
+
 
       Struct struct = Tables.getFromStructTable(structName);
       String offset = struct.getFieldIndex(this.id) + "";
@@ -46,5 +46,13 @@ public class DotExpression
       currentBlock.addInstruction(load);
 
       return loadRegister;
+   }
+
+   private String structNameFromLlvmType(String structType) {
+      int begin = structType.indexOf(".") + 1;
+      int end = structType.indexOf("*");
+      String name =  structType.substring(begin, end);
+
+      return name;
    }
 }

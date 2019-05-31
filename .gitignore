@@ -1,6 +1,15 @@
 
 
 
-
-
+**/*.ll
+**/antlr.*
 **/*.class
+**/*.tokens
+
+
+MiniBaseListener.java
+MiniBaseVisitor.java
+MiniLexer.java
+MiniListener.java
+MiniParser.java
+MiniVisitor.java

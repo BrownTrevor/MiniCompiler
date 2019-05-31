@@ -28,7 +28,8 @@ public class LvalueDot
    public Value generateInstructions(CFGNode currentBlock) {
       Value leftVal = left.generateInstructions(currentBlock);
       String structType = leftVal.getLlvmType();
-      String structName = structType.substring(8, structType.length() - 1);
+      String structName = structNameFromLlvmType(structType);
+      
       Struct struct = Tables.getFromStructTable(structName);
       StructField target = struct.getField(this.id);
       String type = leftVal.getLlvmType() + "*";
@@ -45,6 +46,14 @@ public class LvalueDot
       
       // I'm not sure if this type is right
       return register;
+   }
+   
+   private String structNameFromLlvmType(String structType) {
+      int begin = structType.indexOf(".") + 1;
+      int end = structType.indexOf("*");
+      String name = structType.substring(begin, end);
+
+      return name;
    }
 }
 

@@ -43,7 +43,7 @@ public class StructTable {
    public String toString() {
       String s = "";
       for(Map.Entry<String, Struct> struct : this.table.entrySet()) {
-         s += struct.getValue().toString() + '\n';
+         s += struct.toString() + '\n';
       }
 
       return s;

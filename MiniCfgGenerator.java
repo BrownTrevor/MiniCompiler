@@ -21,13 +21,15 @@ public class MiniCfgGenerator {
 
       cfgList.add(globalBlock);
 
+      //System.err.println(Tables.getStructTable().toString());
+
       visitFunctions(x.getFuncs());
    }
 
    // =========================================================================
    // Declarations
    // =========================================================================
-
+//compare null
    // Visit Struct decls
    public static CFGNode visitStructDecls(List<TypeDeclaration> structs, CFGNode globalBlock) {
       // Generate global instructions and add to global block

@@ -20,7 +20,7 @@ public class IdentifierExpression
 
    public Value generateInstructions(CFGNode currentBlock) {
       Symbol sym = Tables.getFromSymbolTable(id);
-      String type = "*" + sym.getType().llvmType();
+      String type = sym.getType().llvmType() + "*";
       Value reg = new Register(type);
 
       Llvm load = new Load(reg.getValue(), type, "%" + sym.getName());
