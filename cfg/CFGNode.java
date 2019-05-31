@@ -93,7 +93,7 @@ public class CFGNode {
       CFGNode current = this;
 
       if(current.hasHeader()) {
-         sb.append(current.getHeader());
+         sb.append(current.getHeader() + "{\n");
       }
 
       sb.append(current.getLabel().getId() + ":\n");
@@ -105,7 +105,6 @@ public class CFGNode {
          sb.append("\n");
       }
 
-      sb.append("\n");
 
       return sb.toString();
    }
