@@ -10,6 +10,6 @@ public class VoidType
    }
 
    public String llvmType() {
-      return "TODO";
+      return "void";
    }
 }
