@@ -91,8 +91,8 @@ public class BinaryExpression
       Value register = new Register(type);
       String llvmOp = this.operatorToLLVM();
       String reg = register.getValue();
-      String op1 = rightVal.getValue();
-      String op2 = leftVal.getValue();
+      String op2 = rightVal.getValue();
+      String op1 = leftVal.getValue();
       Llvm instruction = null;
 
       switch (llvmOp) {
