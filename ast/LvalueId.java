@@ -27,6 +27,7 @@ public class LvalueId
       String type =  sym.getType().llvmType() + "*";
       Value register = new Register(type);
       Llvm instruction = new Load(register.getValue(), type, "%" + this.id);
+      //System.err.println(type);
 
       currentBlock.addInstruction(instruction);
 

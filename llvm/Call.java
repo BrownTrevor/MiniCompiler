@@ -19,7 +19,7 @@ public class Call implements Llvm {
       this.params = params;
    }
 
-   public Call( String name, String retType, List<String> params) {
+   public Call(String name, String retType, List<String> params) {
       this.target = null;
       this.name = name;
       this.retType = retType;
@@ -35,7 +35,7 @@ public class Call implements Llvm {
          paramString += (s + ", ");
       }
 
-      paramString = paramString.substring(paramString.length()-2);
+      paramString = paramString.substring(0, paramString.length()-2);
 
       if (this.target == null) {
          return "call " + retType + " @" + name + "(" + paramString + ")";

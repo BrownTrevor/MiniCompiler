@@ -31,6 +31,20 @@ public class AssignmentStatement
    }
 
    public CFGNode generateCFG(CFGNode currentBlock, CFGNode exitBblock) {
+      if(this.target instanceof LvalueId) {
+         Value right = this.source.generateInstructions(currentBlock);
+         String targetName = ((LvalueId)target).getId();
+         Symbol sym = Tables.getFromSymbolTable(targetName);
+         String targetType = sym.getType().llvmType() + "*";
+
+         Llvm idInstr = new llvm.Store(right.getLlvmType(), right.getValue(), 
+         targetType, "%" + targetName);
+         
+         currentBlock.addInstruction(idInstr);
+         return currentBlock;
+      }
+      
+      
       Value rVal = this.source.generateInstructions(currentBlock);
       Value target = this.target.generateInstructions(currentBlock);
       

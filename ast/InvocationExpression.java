@@ -41,9 +41,18 @@ public class InvocationExpression
       String retString = function.getRetType().llvmType();
       String funcName = function.getName();
       List<String> list = parseExpressionList(currentBlock);
-      Value reg = new Register(retString);
+      Value reg = null;
 
-      Llvm invoc = new Call(reg.getValue(), funcName, retString, list);
+      Llvm invoc = null;
+
+      if (retString.equals("void")) {
+         invoc = new Call(funcName, retString, list);
+      }
+      else {
+         reg = new Register(retString);
+         invoc = new Call(reg.getValue(), funcName, retString, list);
+      }
+      currentBlock.addInstruction(invoc);
      
       return reg;
    }
@@ -53,7 +62,6 @@ public class InvocationExpression
 
       for (Expression e : this.arguments) {
          Value v = e.generateInstructions(currentBlock);
-
          list.add(v.getLlvmType() + " " + v.getValue());
       }
 
