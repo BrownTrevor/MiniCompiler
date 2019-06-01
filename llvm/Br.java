@@ -25,7 +25,7 @@ public class Br implements Llvm, LlvmBranching {
 
    @Override
    public String toString() {
-      return "br i1 " + cond +  ", label " + trueLabel + ", label " + falseLabel;
+      return "br i1 " + cond +  ", label %" + trueLabel + ", label %" + falseLabel;
    }
    
 }

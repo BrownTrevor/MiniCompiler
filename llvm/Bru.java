@@ -13,7 +13,7 @@ public class Bru implements Llvm, LlvmBranching{
 
    @Override
    public String toString() {
-      return "br label " + dest;
+      return "br label %" + dest;
    }
    
 }
