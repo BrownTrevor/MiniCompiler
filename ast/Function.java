@@ -96,6 +96,7 @@ public class Function implements Type
          exitBlock.addInstruction(new Ret(rtype, reg.getValue()));
       }
 
+      lastBlock.addInstruction(new Bru(exitBlock.getLabel().getId()));
       lastBlock.addChild(exitBlock);
 
       return rootBlock;

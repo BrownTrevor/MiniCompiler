@@ -32,6 +32,6 @@ public class Add implements Llvm, LlvmArithmetic{
 
    @Override
    public String toString() {
-      return target + " = add" + type + " " + op1 + ", " + op2;
+      return target + " = add " + type + " " + op1 + ", " + op2;
    }
 }
