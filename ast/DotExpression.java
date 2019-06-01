@@ -40,7 +40,7 @@ public class DotExpression
       // the type here might be wrong + or - a pointer
       Llvm gep = new llvm.GetElementPtr(gepRegister.getValue(), structType, 
          lValue.getValue(), offset);
-      Llvm load = new llvm.Load(loadRegister.getValue(), elementType, gepRegister.getValue());
+      Llvm load = new llvm.Load(loadRegister.getValue(), elementType + "*", gepRegister.getValue());
 
       currentBlock.addInstruction(gep);
       currentBlock.addInstruction(load);

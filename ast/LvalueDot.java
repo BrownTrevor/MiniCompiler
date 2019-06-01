@@ -32,11 +32,11 @@ public class LvalueDot
       
       Struct struct = Tables.getFromStructTable(structName);
       StructField target = struct.getField(this.id);
-      String type = leftVal.getLlvmType() + "*";
+      String type = leftVal.getLlvmType();
 
       // <result> = getelementptr <pty>* <ptrval> <ty> <idx>
 
-      Register register = new Register(type);
+      Register register = new Register(target.getType().llvmType() + "*");
       String reg = register.getValue();
       String pointer = leftVal.getValue();
       String index = struct.getFieldIndex(this.id) + "";
