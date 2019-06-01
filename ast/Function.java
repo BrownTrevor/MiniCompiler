@@ -77,7 +77,7 @@ public class Function implements Type
       rootBlock.setHeader(functionDeclStr);
 
       if(!this.retType.llvmType().equals("void")){
-         String retInstr = "%retval = alloca " + retType.llvmType();
+         String retInstr = "%_retval_ = alloca " + retType.llvmType();
          rootBlock.addInstruction(new llvm.Generic(retInstr));
       }
 
