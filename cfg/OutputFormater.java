@@ -62,8 +62,9 @@ public class OutputFormater {
    private static String buildLibrary(){
       String s = "declare i8* @malloc(i32)\n";
       s += "declare void @free(i8*)\n";
-      s += "declare i32 @printf(i8*, ...)\n";
-      s += "declare i32 @scanf(i8*, ...)\n";
+      s += "declare i32 @println(i32)\n";
+      s += "declare i32 @print(i32)\n";
+      s += "declare i32 @read()\n";
 
       return s;
    }

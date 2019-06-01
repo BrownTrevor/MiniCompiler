@@ -27,7 +27,8 @@ public class PrintStatement
    public CFGNode generateCFG(CFGNode currentBlock, CFGNode exitBlock) {
       Value expRes = expression.generateInstructions(currentBlock);
 
-      String instruction = "call i32 @print( " + expRes.getValue() + " )";
+      String instruction = "call i32 @print( " + expRes.getLlvmType() + " " 
+      + expRes.getValue() + " )";
 
       Llvm print = new Generic(instruction);
       currentBlock.addInstruction(print);  
