@@ -10,7 +10,7 @@ public class OutputFormater {
       HashSet<cfg.CFGNode> seen = new HashSet<cfg.CFGNode>();
       ArrayList<cfg.CFGNode> queue = new ArrayList<cfg.CFGNode>();
       StringBuilder sb = new StringBuilder();
-
+      sb.append("target triple=\"i686\"");
       sb.append(buildGlobals(cfgList.get(0)));
 
       for (int i = 1; i < cfgList.size(); i++) {
