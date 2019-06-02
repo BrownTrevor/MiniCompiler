@@ -5,6 +5,8 @@
 **/antlr.*
 **/*.class
 **/*.tokens
+benchmarks/**
+a.out
 
 
 MiniBaseListener.java

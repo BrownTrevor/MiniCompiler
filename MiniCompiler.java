@@ -41,11 +41,18 @@ public class MiniCompiler {
          MiniCfgGenerator.generateCFG(program);
          String file = OutputFormater.buildFile(MiniCfgGenerator.getCfgList());
 
-         System.out.println(file);
+         try {
+            PrintWriter writer = new PrintWriter(_outputFile);
+            writer.println(file);
+            writer.close();
+         } catch (Exception e) {
+            System.out.println("Couldn't create output file " + _outputFile);
+         }
       }
    }
 
    private static String _inputFile = null;
+   private static String _outputFile = null;
 
    private static void parseParameters(String[] args) {
       for (int i = 0; i < args.length; i++) {
@@ -57,6 +64,7 @@ public class MiniCompiler {
             System.exit(1);
          } else {
             _inputFile = args[i];
+            _outputFile = args[i] + ".out.ll";
          }
       }
    }
@@ -81,4 +89,6 @@ public class MiniCompiler {
          return null;
       }
    }
+
+  
 }

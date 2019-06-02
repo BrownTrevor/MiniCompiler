@@ -110,10 +110,6 @@ public class BinaryExpression
          op2 = castReg.getValue();
       }
 
-      
-      
-   
-
       Value register = new Register(type);
       String llvmOp = this.operatorToLLVM();
       String reg = register.getValue();
