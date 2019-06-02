@@ -88,7 +88,7 @@ public class MiniCfgGenerator {
       if(type.contains("*")) {
          return "null"; 
       }
-      return "i32";
+      return "0";
    }
 
    // Visit all functions

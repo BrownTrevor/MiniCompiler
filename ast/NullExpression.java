@@ -12,6 +12,6 @@ public class NullExpression
 
    // idk if this is how null should be represented
    public Value generateInstructions(CFGNode current) {
-      return new Immediate("i32*", "0");
+      return new Immediate("null", "0");
    }
 }

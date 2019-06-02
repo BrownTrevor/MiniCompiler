@@ -115,6 +115,16 @@ public class Tables {
       structTable = new StructTable();
    }
 
+   public static boolean isGloblal(String symbolName) {
+      SymbolTable globalTable = symbolTable.get(0);
+
+      if (globalTable.containsSymbol(symbolName)) {
+         return true;
+      }
+      
+      return false;
+   }
+
    public static void initSymbolTable() {
       symbolTable = new ArrayList<SymbolTable>();
       symbolTable.add(new SymbolTable());

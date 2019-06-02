@@ -54,41 +54,6 @@ public class CFGNode {
 
    @Override
    public String toString() {
-      /*
-      HashSet<CFGNode> seen = new HashSet<CFGNode>();
-      ArrayList<CFGNode> queue = new ArrayList<CFGNode>();
-      StringBuilder sb = new StringBuilder();
-
-      queue.add(this);
-      while (!(queue.isEmpty())) {
-         CFGNode current = queue.remove(0);
-         seen.add(current);
-
-         if(current.hasHeader()) {
-            sb.append(current.getHeader());
-         }
-
-         sb.append(current.getLabel().getId() + ":\n");
-         
-         List<Llvm> currentInstructions = current.getInstructions();
-         for (Llvm instruction : currentInstructions) {
-            sb.append("\t");
-            sb.append(instruction.toString());
-            sb.append("\n");
-         }
-
-         sb.append("\n");
-
-         for (CFGNode child : current.getChildren()) {
-            if (!(seen.contains(child))) {
-               queue.add(child);
-            }
-         }
-      }
-
-      return sb.toString();
-      */
-
       StringBuilder sb = new StringBuilder();
       CFGNode current = this;
 

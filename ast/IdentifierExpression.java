@@ -23,9 +23,18 @@ public class IdentifierExpression
       String type = sym.getType().llvmType() + "*";
       Value reg = new Register(sym.getType().llvmType());
 
-      Llvm load = new Load(reg.getValue(), type, "%" + sym.getName());
+      Llvm load = new Load(reg.getValue(), type, specialChar() + sym.getName());
       currentBlock.addInstruction(load);
       
       return reg;
+   }
+
+   private String specialChar() {
+      // look up the index of the table,
+      // if index = 0 then return @
+      if (Tables.isGloblal(id)) {
+         return "@";
+      }
+      return "%";
    }
 }

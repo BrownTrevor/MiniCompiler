@@ -86,13 +86,37 @@ public class BinaryExpression
    public Value generateInstructions(CFGNode currentBlock) {
       Value rightVal = this.right.generateInstructions(currentBlock);
       Value leftVal = this.left.generateInstructions(currentBlock);
+      String rType = rightVal.getLlvmType();
+      String lType = leftVal.getLlvmType();
 
       String type = rightVal.getLlvmType();
+      type = "i32";
+
+      String op1 = leftVal.getValue();
+      String op2 = rightVal.getValue();
+      
+      if (isPointerType(lType)) {
+         Value castReg = new Register(type);
+         Llvm cast = new PtrToInt(castReg.getValue(), leftVal.getLlvmType(), 
+            leftVal.getValue(), type);
+         currentBlock.addInstruction(cast);
+         op1 = castReg.getValue();
+      }
+      if(isPointerType(rType)) {
+         Value castReg = new Register(type);
+         Llvm cast = new PtrToInt(castReg.getValue(), rightVal.getLlvmType(),
+            rightVal.getValue(), type);
+         currentBlock.addInstruction(cast);
+         op2 = castReg.getValue();
+      }
+
+      
+      
+   
+
       Value register = new Register(type);
       String llvmOp = this.operatorToLLVM();
       String reg = register.getValue();
-      String op2 = rightVal.getValue();
-      String op1 = leftVal.getValue();
       Llvm instruction = null;
 
       switch (llvmOp) {
@@ -174,5 +198,12 @@ public class BinaryExpression
             System.exit(1);
       }
       return null;
+   }
+
+   private boolean isPointerType(String type) {
+      if(type.contains("*")){
+         return true;
+      }
+      return false;
    }
 }

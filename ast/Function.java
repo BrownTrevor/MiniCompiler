@@ -73,6 +73,15 @@ public class Function implements Type
       CFGNode rootBlock = new CFGNode();
       CFGNode exitBlock = new CFGNode();
 
+      if (this.retType.llvmType().equals("void")) {
+         exitBlock.addInstruction(new RetVoid());
+      } else {
+         String rtype = this.retType.llvmType();
+         Value reg = new Register(rtype);
+         exitBlock.addInstruction(new Load(reg.getValue(), rtype + "*", "%_retval_"));
+         exitBlock.addInstruction(new Ret(rtype, reg.getValue()));
+      }
+
       String functionDeclStr = getFunctionDeclStr();
       rootBlock.setHeader(functionDeclStr);
 
@@ -86,15 +95,7 @@ public class Function implements Type
 
       CFGNode lastBlock = this.body.generateCFG(rootBlock, exitBlock);
 
-      if (this.retType.llvmType().equals("void")) {
-         exitBlock.addInstruction(new RetVoid());
-      }
-      else {
-         String rtype = this.retType.llvmType();
-         Value reg = new Register(rtype);
-         exitBlock.addInstruction(new Load(reg.getValue(), rtype + "*", "%_retval_"));
-         exitBlock.addInstruction(new Ret(rtype, reg.getValue()));
-      }
+   
 
       lastBlock.addInstruction(new Bru(exitBlock.getLabel().getId()));
       lastBlock.addChild(exitBlock);

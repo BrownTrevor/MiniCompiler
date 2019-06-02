@@ -27,6 +27,8 @@ public class ReturnStatement
       Value expRes = expression.generateInstructions(currentBlock);
       String exitLabel = exitBlock.getLabel().getId();
 
+      expRes = handleNull(expRes, exitBlock);
+
       Llvm store = new Store(expRes.getLlvmType(), expRes.getValue(), 
             expRes.getLlvmType() + "*", "%_retval_");
       Llvm branch = new Bru(exitLabel);
@@ -35,5 +37,21 @@ public class ReturnStatement
       currentBlock.addInstruction(branch);
 
       return currentBlock;
+   }
+
+   private Value handleNull(Value v, CFGNode exitBlock) {
+      if (!v.getLlvmType().equals("null")) {
+         return v;
+      }
+
+      Llvm instr = exitBlock.getInstructions().get(0);
+
+      if(instr instanceof Load) {
+         Load load = (Load) instr;
+         String retType = load.getType().substring(0, load.getType().length()-1);
+         return new Immediate(retType, "null");
+      }
+
+      return v;
    }
 }
