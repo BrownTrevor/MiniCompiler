@@ -6,7 +6,7 @@ public class Trunc implements Llvm {
    private String type2;
    private String value;
 
-   public Trunc(String target, String type1, String type2, String value) {
+   public Trunc(String target, String type1, String value, String type2) {
       this.target = target;
       this.type1 = type1;
       this.type2 = type2;

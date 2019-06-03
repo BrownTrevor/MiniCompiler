@@ -39,7 +39,7 @@ public class ConditionalStatement
    public CFGNode generateCFG(CFGNode currentBlock, CFGNode exitBlock) {
       // br i1 %u97, label %LU43, label %LU45
 
-      Value guardVal = guard.generateInstructions(currentBlock);
+      Value guardVal = handleGaurd(currentBlock);
 
       CFGNode thenBlock = new CFGNode();
       CFGNode elseBlock = new CFGNode();
@@ -63,5 +63,17 @@ public class ConditionalStatement
       currentBlock.addChild(elseBlock);
 
       return joinBlock;
+   }
+
+
+   private Value handleGaurd(CFGNode block) {
+      Value truncMe = guard.generateInstructions(block);
+
+      Value result = new Register("i1");
+      Llvm trunc = new Trunc(result.getValue(), truncMe.getLlvmType(), truncMe.getValue(), result.getLlvmType());
+
+      block.addInstruction(trunc);
+
+      return result;
    }
 }

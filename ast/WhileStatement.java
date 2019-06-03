@@ -35,7 +35,7 @@ public class WhileStatement
       CFGNode bodyBlock = new CFGNode();
       CFGNode joinBlock = new CFGNode();
 
-      Value guardVal = guard.generateInstructions(conditionalBlock);
+      Value guardVal = handleGaurd(conditionalBlock);
       
       Llvm enterLoop = new Bru(conditionalBlock.getLabel().getId());
       Llvm branch = new Br(guardVal.getValue(), bodyBlock.getLabel().getId(), 
@@ -53,5 +53,17 @@ public class WhileStatement
       conditionalBlock.addChild(joinBlock);
 
       return joinBlock;
+   }
+
+   private Value handleGaurd(CFGNode block){
+      Value truncMe = guard.generateInstructions(block);
+
+      Value result = new Register("i1");
+      Llvm trunc = new Trunc(result.getValue(), truncMe.getLlvmType(), 
+         truncMe.getValue(), result.getLlvmType());
+      
+      block.addInstruction(trunc);
+
+      return result;
    }
 }

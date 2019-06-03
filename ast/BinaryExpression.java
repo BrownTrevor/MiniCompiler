@@ -135,23 +135,29 @@ public class BinaryExpression
             instruction = new Or(reg, type, op1, op2);
             break;
          case "imcp slt":
-            instruction = new Icmp(reg, "slt",type, op1, op2);
-            break; 
+            instruction = new Icmp(reg, "slt", type, op1, op2);
+            currentBlock.addInstruction(instruction);
+            return zextResult(currentBlock, register);
          case "imcp sle":
             instruction = new Icmp(reg, "sle", type, op1, op2);
-            break;
+            currentBlock.addInstruction(instruction);
+            return zextResult(currentBlock, register);
          case "imcp sgt":
             instruction = new Icmp(reg, "sgt", type, op1, op2);
-            break;
+            currentBlock.addInstruction(instruction);
+            return zextResult(currentBlock, register);
          case "imcp sge":
             instruction = new Icmp(reg, "sge", type, op1, op2);
-            break;
+            currentBlock.addInstruction(instruction);
+            return zextResult(currentBlock, register);
          case "imcp eq":
             instruction = new Icmp(reg, "eq", type, op1, op2);
-            break;
+            currentBlock.addInstruction(instruction);
+            return zextResult(currentBlock, register);
          case "imcp ne":
             instruction = new Icmp(reg, "ne", type, op1, op2);
-            break;
+            currentBlock.addInstruction(instruction);
+            return zextResult(currentBlock, register);
          default: 
             System.err.println("Error: Operator mismatch");
             System.exit(1);
@@ -202,4 +208,15 @@ public class BinaryExpression
       }
       return false;
    }
+
+
+   private Value zextResult(CFGNode current, Value v) {
+      Value result = new Register("i32");
+
+      Llvm zext = new Zext(result.getValue(), "i1",v.getValue(), "i32");
+      current.addInstruction(zext);
+
+      return result;
+   }
+   
 }

@@ -45,7 +45,9 @@ public class OutputFormater {
    private static String buildGlobals(CFGNode firstNode) {
       List<Llvm> instrList = firstNode.getInstructions();
 
-      if (instrList.get(0).toString().contains("define")) {
+      if (instrList == null 
+         || instrList.size() == 0
+         || instrList.get(0).toString().contains("define")) {
          return "";
       }
 

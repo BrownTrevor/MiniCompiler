@@ -1,7 +1,7 @@
 package ast;
 
 import cfg.*;
-
+import llvm.*;
 
 public class UnaryExpression
    extends AbstractExpression
@@ -50,24 +50,49 @@ public class UnaryExpression
    }
 
    public Value generateInstructions(CFGNode currentBlock) { 
-      Value operandVal = this.operand.generateInstructions(currentBlock);
-      String type = operandVal.getValue();
-      Register register = new Register(type);
-      String instruction = register.getValue() + " = ";
+      Value operVal = this.operand.generateInstructions(currentBlock);
+      
+      String operName = operVal.getValue();
+      String operType = operVal.getLlvmType();
 
 
       // which operator is this?
-      if(this.operator == Operator.NOT && !operandVal.getLlvmType().equals("i1")) {
-         instruction += ("xor i1 " + type + ", 1");
+      if(this.operator == Operator.NOT)  { 
+         Value truncReg = truncResult(currentBlock, operVal);
+         Value xorReg = new Register(operType);
+         Llvm instruction = new Xor(xorReg.getValue(), "i1", truncReg.getValue(), "1");
+         currentBlock.addInstruction(instruction);
+         Value zextReg = zextResult(currentBlock, xorReg);
+         return zextReg;
       }
       else if(this.operator == Operator.MINUS){
-         instruction += ("sub " + type + " 0, " + operandVal.getValue());
+         Value reg = new Register(operType);
+         Llvm instruction = new Sub(reg.getValue(), operType, "0", operName);
+         currentBlock.addInstruction(instruction);
+         return reg;
       }
       else {
          System.err.println("Error: operator not defined");
          System.exit(1);
+         return null;
       }      
+   }
 
-      return new Register(operandVal.getLlvmType());
+   private Value zextResult(CFGNode current, Value v) {
+      Value result = new Register("i32");
+
+      Llvm zext = new Zext(result.getValue(), "i1", v.getValue(), "i32");
+      current.addInstruction(zext);
+
+      return result;
+   }
+
+   private Value truncResult(CFGNode current, Value v) {
+      Value result = new Register("i1");
+
+      Llvm trunc = new Trunc(result.getValue(), "i32", v.getValue(), "i1");
+      current.addInstruction(trunc);
+
+      return result;
    }
 }

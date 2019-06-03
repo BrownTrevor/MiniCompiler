@@ -35,7 +35,9 @@ public class Call implements Llvm {
          paramString += (s + ", ");
       }
 
-      paramString = paramString.substring(0, paramString.length()-2);
+      if(paramString.length() > 0) {
+         paramString = paramString.substring(0, paramString.length() - 2);
+      }
 
       if (this.target == null) {
          return "call " + retType + " @" + name + "(" + paramString + ")";
