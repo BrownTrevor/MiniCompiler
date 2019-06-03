@@ -32,7 +32,7 @@ public class Xor implements Llvm, LlvmBoolean {
 
    @Override
    public String toString() {
-      return target + " = xor\t" + type + " " + op1 + ", " + op2;
+      return target + " = xor " + type + " " + op1 + ", " + op2;
    }
 }
 
