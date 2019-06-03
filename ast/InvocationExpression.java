@@ -40,7 +40,7 @@ public class InvocationExpression
       Function function = (Function) functionType;
       String retString = function.getRetType().llvmType();
       String funcName = function.getName();
-      List<String> list = parseExpressionList(currentBlock);
+      List<String> list = parseExpressionList(function, currentBlock);
       Value reg = null;
 
       Llvm invoc = null;
@@ -57,12 +57,24 @@ public class InvocationExpression
       return reg;
    }
 
-   private List<String> parseExpressionList(CFGNode currentBlock) {
+   private List<String> parseExpressionList(Function function, CFGNode currentBlock) {
+      List<String> paramTypes = new ArrayList<String>();
+      for (ast.Declaration param : function.getParams()) {
+         paramTypes.add(param.getType().llvmType());
+      }
+
       List<String> list = new ArrayList<String>();
 
-      for (Expression e : this.arguments) {
+      for (int i = 0; i < this.arguments.size(); i++) {
+         Expression e = this.arguments.get(i);
          Value v = e.generateInstructions(currentBlock);
-         list.add(v.getLlvmType() + " " + v.getValue());
+
+         if(v.getLlvmType() == "null") {
+            list.add(paramTypes.get(i) + " " + "null");
+         }
+         else {
+            list.add(v.getLlvmType() + " " + v.getValue());
+         }
       }
 
       return list;
