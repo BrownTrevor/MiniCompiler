@@ -69,7 +69,7 @@ public class AssignmentStatement extends AbstractStatement {
    private String specialChar(String name) {
       // look up the index of the table,
       // if index = 0 then return @
-      if (Tables.isGloblal(name)) {
+      if (Tables.isGlobal(name)) {
          return "@";
       }
       return "%";

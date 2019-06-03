@@ -32,7 +32,7 @@ public class IdentifierExpression
    private String specialChar() {
       // look up the index of the table,
       // if index = 0 then return @
-      if (Tables.isGloblal(id)) {
+      if (Tables.isGlobal(id)) {
          return "@";
       }
       return "%";
