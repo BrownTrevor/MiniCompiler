@@ -115,10 +115,15 @@ public class Tables {
       structTable = new StructTable();
    }
 
-   public static boolean isGloblal(String symbolName) {
-      SymbolTable globalTable = symbolTable.get(0);
+   public static boolean isGlobal(String symbolName) {
+      // check if declared locally; if so local trumps global
+      for (int index = symbolTable.size()-1; index > 0; index--) {
+         if (symbolTable.get(index).containsSymbol(symbolName)) {
+            return false;
+         }
+      }
 
-      if (globalTable.containsSymbol(symbolName)) {
+      if (symbolTable.get(0).containsSymbol(symbolName)) {
          return true;
       }
       
