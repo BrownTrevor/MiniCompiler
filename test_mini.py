@@ -14,7 +14,7 @@ for benchmark in os.listdir(directory):
          my_output_path = os.path.join(path, "myoutput")
          test_output_path = os.path.join(path, "output")
 
-         os.system("java MiniCompiler " + mini_path)
+         os.system("java MiniCompiler " + mini_path + " -stack")
          os.system("clang -m32 " + mini_path + ".out.ll  'utility.c' " +
             "-o " + exec_path)
          os.system("./" + exec_path + " < " + input_path + " > " + my_output_path)
