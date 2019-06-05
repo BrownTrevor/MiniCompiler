@@ -31,6 +31,6 @@ public class Sdiv implements Llvm, LlvmArithmetic{
 
    @Override
    public String toString() {
-      return target + " = sdiv\t" + type + " " + op1 + ", " + op2;
+      return target + " = sdiv " + type + " " + op1 + ", " + op2;
    }
 }

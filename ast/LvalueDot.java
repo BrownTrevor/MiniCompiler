@@ -2,6 +2,7 @@ package ast;
 
 import llvm.*;
 import cfg.*;
+import globals.*;
 
 public class LvalueDot
    implements Lvalue
@@ -36,7 +37,7 @@ public class LvalueDot
 
       // <result> = getelementptr <pty>* <ptrval> <ty> <idx>
 
-      Register register = new Register(target.getType().llvmType() + "*");
+      Register register = new Register(target.getType().llvmType() + "*", currentBlock);
       String reg = register.getValue();
       String pointer = leftVal.getValue();
       String index = struct.getFieldIndex(this.id) + "";

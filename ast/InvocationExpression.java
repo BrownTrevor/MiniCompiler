@@ -3,6 +3,7 @@ package ast;
 import java.util.*;
 import cfg.*;
 import llvm.*;
+import globals.*;
 
 public class InvocationExpression
    extends AbstractExpression
@@ -49,7 +50,7 @@ public class InvocationExpression
          invoc = new Call(funcName, retString, list);
       }
       else {
-         reg = new Register(retString);
+         reg = new Register(retString, currentBlock);
          invoc = new Call(reg.getValue(), funcName, retString, list);
       }
       currentBlock.addInstruction(invoc);

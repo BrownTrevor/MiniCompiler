@@ -5,15 +5,26 @@ import llvm.*;
 
 public class CFGNode {
    private ArrayList<CFGNode> children;
+   private ArrayList<CFGNode> preds;
    private ArrayList<Llvm> instructions;
+   
+   private HashMap<String, Value> valueTable;
+   private List<Phi> incompletePhis;
+
    private Label label;
    private String header;
+   private boolean sealed;
 
    public CFGNode() {
       this.label = new Label();
       children = new ArrayList<CFGNode>();
       instructions = new ArrayList<Llvm>();
       header = null;
+
+      preds = new ArrayList<CFGNode>();
+      valueTable = new HashMap<String, Value>();
+      incompletePhis = new ArrayList<Phi>();
+      sealed = false;
    }
 
    public void addChild(CFGNode node) {
@@ -31,6 +42,23 @@ public class CFGNode {
    public void addInstruction(Llvm s) {
       instructions.add(s);
    }
+
+   public void sealBlock() {
+      this.sealed = true;
+   }
+
+   public boolean isSealed() {
+      return this.sealed;
+   }
+
+   public void addPred(CFGNode node) {
+      preds.add(node);
+   }
+
+   public List<CFGNode> getPreds() {
+      return this.preds;
+   }
+
 
    public Label getLabel() {
       return this.label;
@@ -51,7 +79,25 @@ public class CFGNode {
       return this.header;
    }
 
+   public void addToValueTable(String n, Value v){
+      this.valueTable.put(n,v);
+   }
 
+   public Value getFromValueTable(String n) {
+      Value v = this.valueTable.get(n);
+
+      return v;
+   }
+
+   public void addToIncompletePhis(Phi p) {
+      incompletePhis.add(p);
+   } 
+
+   public List<Phi> getIncompletePhis() {
+      return incompletePhis;
+   }
+
+  
    @Override
    public String toString() {
       StringBuilder sb = new StringBuilder();
@@ -72,5 +118,10 @@ public class CFGNode {
 
 
       return sb.toString();
+   }
+
+   private void error(String msg) {
+      System.err.println(msg);
+      System.exit(1);
    }
 }

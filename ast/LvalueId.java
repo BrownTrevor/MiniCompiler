@@ -2,6 +2,7 @@ package ast;
 
 import cfg.*;
 import llvm.*;
+import globals.*;
 
 public class LvalueId
    implements Lvalue
@@ -25,7 +26,7 @@ public class LvalueId
       // type must be retrieved by the this.id
       Symbol sym = Tables.getFromSymbolTable(this.id);
       String type =  sym.getType().llvmType() + "*";
-      Value register = new Register(type);
+      Value register = new Register(type, currentBlock);
       Llvm instruction = new Load(register.getValue(), type, "%" + this.id);
       //System.err.println(type);
 

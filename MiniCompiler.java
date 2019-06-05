@@ -5,6 +5,7 @@ import java.io.*;
 import javax.json.JsonValue;
 import java.util.*;
 import cfg.*;
+import globals.*;
 
 public class MiniCompiler {
    public static void main(String[] args) {
@@ -38,31 +39,33 @@ public class MiniCompiler {
           * typeChecker.visit(program);
           */
 
-         if (_isStack) {
-            MiniCfgGenerator.generateCFG(program);
-            String file = OutputFormater.buildFile(MiniCfgGenerator.getCfgList());
 
-            try {
-               PrintWriter writer = new PrintWriter(_outputFile);
-               writer.println(file);
-               writer.close();
-            } catch (Exception e) {
-               System.out.println("Couldn't create output file " + _outputFile);
-            }
+         MiniCfgGenerator.generateCFG(program);
+         String file = OutputFormater.buildFile(MiniCfgGenerator.getCfgList());
+
+         try {
+            PrintWriter writer = new PrintWriter(_outputFile);
+            writer.println(file);
+            writer.close();
+         } catch (Exception e) {
+            System.out.println("Couldn't create output file " + _outputFile);
          }
+         
 
       }
    }
 
    private static String _inputFile = null;
    private static String _outputFile = null;
-   private static Boolean _isStack = false;
 
    private static void parseParameters(String[] args) {
       for (int i = 0; i < args.length; i++) {
          if (args[i].charAt(0) == '-') {
             if(args[i].equals("-stack")) {
-               _isStack = true;
+               Flags.setStackFlag(true);
+            }
+            else if(args[i].equals("-register")) {
+               Flags.setRegFlag(true);
             }
             else {
                System.err.println("Unexpected option: " + args[i]);

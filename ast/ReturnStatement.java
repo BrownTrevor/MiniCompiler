@@ -27,7 +27,7 @@ public class ReturnStatement
       Value expRes = expression.generateInstructions(currentBlock);
       String exitLabel = exitBlock.getLabel().getId();
 
-      expRes = handleNull(expRes, exitBlock);
+      expRes = handleNull(expRes, currentBlock, exitBlock);
 
       Llvm store = new Store(expRes.getLlvmType(), expRes.getValue(), 
             expRes.getLlvmType() + "*", "%_retval_");
@@ -39,7 +39,7 @@ public class ReturnStatement
       return currentBlock;
    }
 
-   private Value handleNull(Value v, CFGNode exitBlock) {
+   private Value handleNull(Value v, CFGNode currentBlock, CFGNode exitBlock) {
       if (!v.getLlvmType().equals("null")) {
          return v;
       }
@@ -49,7 +49,7 @@ public class ReturnStatement
       if(instr instanceof Load) {
          Load load = (Load) instr;
          String retType = load.getType().substring(0, load.getType().length()-1);
-         return new Immediate(retType, "null");
+         return new Immediate(retType, "null", currentBlock);
       }
 
       return v;

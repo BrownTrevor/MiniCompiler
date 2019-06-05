@@ -62,6 +62,11 @@ public class ConditionalStatement
       currentBlock.addChild(thenBlock);
       currentBlock.addChild(elseBlock);
 
+      thenBlock.addPred(currentBlock);
+      elseBlock.addPred(currentBlock);
+      joinBlock.addPred(thenBlock);
+      joinBlock.addPred(elseBlock);
+
       return joinBlock;
    }
 
@@ -69,7 +74,7 @@ public class ConditionalStatement
    private Value handleGaurd(CFGNode block) {
       Value truncMe = guard.generateInstructions(block);
 
-      Value result = new Register("i1");
+      Value result = new Register("i1", block);
       Llvm trunc = new Trunc(result.getValue(), truncMe.getLlvmType(), truncMe.getValue(), result.getLlvmType());
 
       block.addInstruction(trunc);

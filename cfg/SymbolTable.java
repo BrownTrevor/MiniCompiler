@@ -15,13 +15,13 @@ public class SymbolTable {
          this.table.put(symbolName, symbolInstance);
       }
       else {
-         this.error("Redeclaration of symbol: " + symbolName);
+         error("Redeclaration of symbol: " + symbolName);
       }
    }
 
    public void removeSymbol(String symbolName) {
       if(this.table.remove(symbolName) == null) {
-         this.error("SymTabl - Cannot remove symbol: " + symbolName + " because it does not exist");
+         error("SymTabl - Cannot remove symbol: " + symbolName + " because it does not exist");
       }
    }
 
@@ -29,7 +29,7 @@ public class SymbolTable {
       Symbol s = this.table.get(symbolName);
 
       if(s == null) {
-         this.error("SymTabl - Cannot retrieve symbol: " + symbolName + " because it does not exist");
+         error("SymTabl - Cannot retrieve symbol: " + symbolName + " because it does not exist");
       }
 
       return s;

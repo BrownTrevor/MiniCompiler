@@ -30,7 +30,7 @@ public class DeleteStatement
       // %u83 = bitcast %struct.foo* %u82 to i8*
       // call void @free(i8* %u83)
 
-      Value bitcastReg = new Register(pointer.getLlvmType());
+      Value bitcastReg = new Register(pointer.getLlvmType(), currentBlock);
 
       Llvm bitcast = new BitCast(bitcastReg.getValue(), 
          pointer.getLlvmType(), pointer.getValue(), "i8*");

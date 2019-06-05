@@ -2,6 +2,7 @@ package ast;
 
 import cfg.*;
 import llvm.*;
+import globals.*;
 
 import java.util.List;
 
@@ -73,32 +74,41 @@ public class Function implements Type
       CFGNode rootBlock = new CFGNode();
       CFGNode exitBlock = new CFGNode();
 
+
+      // construct exit block
       if (this.retType.llvmType().equals("void")) {
          exitBlock.addInstruction(new RetVoid());
       } else {
          String rtype = this.retType.llvmType();
-         Value reg = new Register(rtype);
+         Value reg = new Register(rtype, exitBlock);
          exitBlock.addInstruction(new Load(reg.getValue(), rtype + "*", "%_retval_"));
          exitBlock.addInstruction(new Ret(rtype, reg.getValue()));
       }
 
+      //Set functions header
       String functionDeclStr = getFunctionDeclStr();
       rootBlock.setHeader(functionDeclStr);
 
+      //allocate space for a return value if it is needed
       if(!this.retType.llvmType().equals("void")){
          String retInstr = "%_retval_ = alloca " + retType.llvmType();
          rootBlock.addInstruction(new llvm.Generic(retInstr));
       }
 
+      // add instructions to the root block for various decls
       rootBlock = this.visitFunctionParams(params, rootBlock);
       rootBlock = this.visitFunctionDecls(locals, rootBlock);
 
+      // recursively generate the rest of the function
       CFGNode lastBlock = this.body.generateCFG(rootBlock, exitBlock);
 
    
-
+      // ensure that all paths lead to the exit block
       lastBlock.addInstruction(new Bru(exitBlock.getLabel().getId()));
       lastBlock.addChild(exitBlock);
+      exitBlock.addPred(lastBlock);
+      
+      sealCFG(rootBlock);
 
       return rootBlock;
    }
@@ -106,11 +116,18 @@ public class Function implements Type
    private String getFunctionDeclStr() {
       
       String instruction = "define " + retType.llvmType() + " @" + this.getName() + "(";
-
-      for (Declaration d : params) {
-         instruction += (d.getType().llvmType() + " %_p_" + d.getName() + ", ");
+      String specialParamStr = " %_p_";
+      if (Flags.isRegisterBased())
+      {
+         specialParamStr = " %";
       }
-
+      
+      for (Declaration d : params) {
+         instruction += (d.getType().llvmType() + specialParamStr 
+            + d.getName() + ", ");
+      }
+      
+   
       if (params.size() >0 ){
          instruction = instruction.substring(0, instruction.length() - 2);
       }
@@ -120,7 +137,11 @@ public class Function implements Type
       return instruction;
    }
 
+
    private CFGNode visitFunctionParams(List<Declaration> params, CFGNode current) {
+      if (Flags.isRegisterBased()) {
+         return regBasedDeclaration(params, current); 
+      }
 
       for (Declaration d : params) {
          Tables.addToSymbolTable(new Symbol(d));
@@ -149,7 +170,21 @@ public class Function implements Type
       //store i32 %num, i32* %_P_num
    }
 
+   private CFGNode regBasedDeclaration(List<Declaration> params, CFGNode current) {
+      for (Declaration d : params) {
+         Tables.addToSymbolTable(new Symbol(d));
+         SSA.writeVariable(d.getName(), current, 
+            new Immediate(d.getType().llvmType(), "%" + d.getName() , current));
+      }
+      return current;
+   }
+
+
+
    private CFGNode visitFunctionDecls(List<Declaration> decls, CFGNode current) {
+      if (Flags.isRegisterBased()) {
+         return regBasedDeclaration(decls, current);
+      }
 
       for (Declaration d : decls) {
          Tables.addToSymbolTable(new Symbol(d));
@@ -166,5 +201,15 @@ public class Function implements Type
 
    public String llvmType() {
       return "function";
+   }
+
+   private void sealCFG(CFGNode block) {
+      SSA.sealBlock(block);
+
+      for(CFGNode n : block.getChildren()) {
+         if (!n.isSealed()){
+            sealCFG(n);
+         }
+      }
    }
 }

@@ -2,6 +2,7 @@ package ast;
 
 import cfg.*;
 import llvm.*;
+import globals.*;
 
 public class NewExpression
    extends AbstractExpression
@@ -28,8 +29,8 @@ public class NewExpression
       String size = (struct.getStructSize()*4) + "";
       String structType = struct.llvmType();
 
-      Value mallocReg = new Register("i8*");
-      Value bitcastReg = new Register(structType);
+      Value mallocReg = new Register("i8*", currentBlock);
+      Value bitcastReg = new Register(structType, currentBlock);
 
       Llvm malloc = new Generic(mallocReg.getValue() + " = call i8* @malloc(i32 " + size + ") ");
       Llvm bitcast = new BitCast(bitcastReg.getValue(), "i8*", 

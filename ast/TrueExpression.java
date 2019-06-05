@@ -11,6 +11,6 @@ public class TrueExpression
    }
 
    public Value generateInstructions(CFGNode current) {
-      return new Immediate("i32", "1");
+      return new Immediate("i32", "1", current);
    }
 }

@@ -2,6 +2,7 @@ import java.util.*;
 
 import cfg.*;
 import ast.*;
+import globals.*;
 
 
 public class MiniCfgGenerator {
@@ -21,7 +22,7 @@ public class MiniCfgGenerator {
 
       cfgList.add(globalBlock);
 
-      //System.err.println(Tables.getStructTable().toString());
+      // System.err.println(Tables.getStructTable().toString());
 
       visitFunctions(x.getFuncs());
    }

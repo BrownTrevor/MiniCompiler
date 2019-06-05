@@ -19,7 +19,7 @@ public class IntegerExpression
 
 
    public Value generateInstructions(CFGNode currentBlock){
-      return new Immediate("i32", value);
+      return new Immediate("i32", value, currentBlock);
    }
 
 

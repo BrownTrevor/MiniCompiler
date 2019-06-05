@@ -52,13 +52,18 @@ public class WhileStatement
       conditionalBlock.addChild(bodyBlock);
       conditionalBlock.addChild(joinBlock);
 
+      conditionalBlock.addPred(bodyBlockRes);
+      conditionalBlock.addPred(currentBlock);
+      bodyBlock.addPred(conditionalBlock);
+      joinBlock.addPred(conditionalBlock);
+
       return joinBlock;
    }
 
    private Value handleGaurd(CFGNode block){
       Value truncMe = guard.generateInstructions(block);
 
-      Value result = new Register("i1");
+      Value result = new Register("i1", block);
       Llvm trunc = new Trunc(result.getValue(), truncMe.getLlvmType(), 
          truncMe.getValue(), result.getLlvmType());
       

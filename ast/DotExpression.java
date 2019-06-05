@@ -2,6 +2,7 @@ package ast;
 
 import cfg.*;
 import llvm.*;
+import globals.*;
 
 public class DotExpression
    extends AbstractExpression
@@ -34,8 +35,8 @@ public class DotExpression
       String offset = struct.getFieldIndex(this.id) + "";
       String elementType = struct.getFieldType(this.id).llvmType();
 
-      Value gepRegister = new Register(structType);
-      Value loadRegister = new Register(elementType);
+      Value gepRegister = new Register(structType, currentBlock);
+      Value loadRegister = new Register(elementType, currentBlock);
 
       // the type here might be wrong + or - a pointer
       Llvm gep = new llvm.GetElementPtr(gepRegister.getValue(), structType, 

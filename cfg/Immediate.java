@@ -1,13 +1,14 @@
 package cfg;
 
-
-public class Immediate implements Value{
+public class Immediate implements Value {
    private String llvmType;
    private String immediate;
+   private CFGNode block;
 
-   public Immediate(String t, String i) {
+   public Immediate(String t, String i, CFGNode block) {
       this.llvmType = t;
       this.immediate = i;
+      this.block = block;
    }
 
    public String getValue() {
@@ -18,8 +19,12 @@ public class Immediate implements Value{
       return llvmType;
    }
 
-   public boolean isRegister(){
+   public boolean isRegister() {
       return false;
+   }
+
+   public CFGNode getBlock() {
+      return this.block;
    }
 
    @Override

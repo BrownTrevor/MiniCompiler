@@ -1,5 +1,6 @@
-package cfg;
+package globals;
 
+import cfg.*;
 import java.util.ArrayList;
 
 public class Tables {

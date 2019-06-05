@@ -6,6 +6,7 @@ public class Register implements Value {
    private static int registerNumber = 0;
    private String register;
    private String llvmType;
+   private CFGNode block;
 
    public static String currentRegister() {
       return ("%u" + registerNumber); 
@@ -17,9 +18,10 @@ public class Register implements Value {
    }
 
    
-   public Register(String t) {
+   public Register(String t, CFGNode block) {
       registerNumber++;
       this.llvmType = t;
+      this.block = block;
       this.register = "%u" + registerNumber;
    }
 
@@ -33,6 +35,14 @@ public class Register implements Value {
 
    public boolean isRegister() {
       return true;
+   }
+
+   public CFGNode getBlock() {
+      return this.block;
+   }
+
+   public void setType(String type) {
+      this.llvmType = type;
    }
 
    @Override

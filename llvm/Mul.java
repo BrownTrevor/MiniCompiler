@@ -31,6 +31,6 @@ public class Mul implements Llvm, LlvmArithmetic {
 
    @Override
    public String toString() {
-      return target + " = mul\t" + type + " " + op1 + ", " + op2;
+      return target + " = mul " + type + " " + op1 + ", " + op2;
    }
 }

@@ -96,21 +96,21 @@ public class BinaryExpression
       String op2 = rightVal.getValue();
       
       if (isPointerType(lType)) {
-         Value castReg = new Register(type);
+         Value castReg = new Register(type, currentBlock);
          Llvm cast = new PtrToInt(castReg.getValue(), leftVal.getLlvmType(), 
             leftVal.getValue(), type);
          currentBlock.addInstruction(cast);
          op1 = castReg.getValue();
       }
       if(isPointerType(rType)) {
-         Value castReg = new Register(type);
+         Value castReg = new Register(type, currentBlock);
          Llvm cast = new PtrToInt(castReg.getValue(), rightVal.getLlvmType(),
             rightVal.getValue(), type);
          currentBlock.addInstruction(cast);
          op2 = castReg.getValue();
       }
 
-      Value register = new Register(type);
+      Value register = new Register(type, currentBlock);
       String llvmOp = this.operatorToLLVM();
       String reg = register.getValue();
       Llvm instruction = null;
@@ -203,6 +203,10 @@ public class BinaryExpression
    }
 
    private boolean isPointerType(String type) {
+      if (type == null) {
+         return false;
+      }
+
       if(type.contains("*")){
          return true;
       }
@@ -211,7 +215,7 @@ public class BinaryExpression
 
 
    private Value zextResult(CFGNode current, Value v) {
-      Value result = new Register("i32");
+      Value result = new Register("i32", current);
 
       Llvm zext = new Zext(result.getValue(), "i1",v.getValue(), "i32");
       current.addInstruction(zext);
