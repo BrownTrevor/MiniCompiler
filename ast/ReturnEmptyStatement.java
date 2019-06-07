@@ -22,6 +22,7 @@ public class ReturnEmptyStatement
       String exitLabel = exitBlock.getLabel().getId();
       Llvm branch = new Bru(exitLabel);
       currentBlock.addInstruction(branch);  
+      currentBlock.setTerminal(true);
 
       return currentBlock;
    }

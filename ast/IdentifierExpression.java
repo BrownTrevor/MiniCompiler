@@ -21,6 +21,9 @@ public class IdentifierExpression
 
    public Value generateInstructions(CFGNode currentBlock) {
       // if this reg flag is set and this is not a global var, defer 
+
+     // System.err.println(id + ": " + Flags.isRegisterBased() + " " +
+     //    !Tables.isGlobal(this.id));
       if(Flags.isRegisterBased() && !Tables.isGlobal(this.id)) {
          return generateRegBasedInstructions(currentBlock);
       }
@@ -37,7 +40,10 @@ public class IdentifierExpression
    }
 
    public Value generateRegBasedInstructions(CFGNode current) {
-      return SSA.readVariable(this.id, current);
+      Value v = SSA.readVariable(this.id, current);
+      //System.err.println(v.getValue() + " | " +  v.getLlvmType() + " | " +
+      //   v.getBlock().getLabel().getId());
+      return v;
    }
 
    private String specialChar() {

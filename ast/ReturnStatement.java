@@ -1,6 +1,8 @@
 package ast;
 
 import cfg.*;
+import globals.Flags;
+import globals.Tables;
 import llvm.*;
 
 public class ReturnStatement
@@ -29,12 +31,21 @@ public class ReturnStatement
 
       expRes = handleNull(expRes, currentBlock, exitBlock);
 
-      Llvm store = new Store(expRes.getLlvmType(), expRes.getValue(), 
+      if (Flags.isRegisterBased()) {
+         SSA.writeVariable("%_retval_", currentBlock, expRes);
+      }
+      else {
+         Llvm store = new Store(expRes.getLlvmType(), expRes.getValue(), 
             expRes.getLlvmType() + "*", "%_retval_");
+         currentBlock.addInstruction(store);
+      }
+
+      currentBlock.addChild(exitBlock);
+      exitBlock.addPred(currentBlock);
       Llvm branch = new Bru(exitLabel);
 
-      currentBlock.addInstruction(store);
       currentBlock.addInstruction(branch);
+      currentBlock.setTerminal(true);
 
       return currentBlock;
    }
@@ -44,7 +55,14 @@ public class ReturnStatement
          return v;
       }
 
+      // need to figure out the return type. This wont work anymore
       Llvm instr = exitBlock.getInstructions().get(0);
+
+      if (instr instanceof Ret) {
+         Ret ret = (Ret) instr;
+         String retType = ret.getType().substring(0, ret.getType().length() - 1);
+         return new Immediate(retType, "null", currentBlock);
+      }
 
       if(instr instanceof Load) {
          Load load = (Load) instr;

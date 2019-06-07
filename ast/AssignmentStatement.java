@@ -29,9 +29,8 @@ public class AssignmentStatement extends AbstractStatement {
 
    public CFGNode generateCFG(CFGNode currentBlock, CFGNode exitBlock) {
       if (this.target instanceof LvalueId && Flags.isRegisterBased()) {
-         return handleLvalueId((LvalueId) target, currentBlock, exitBlock);
-      }
-      else if (this.target instanceof LvalueId) {
+         return handleRegisterBasedLvalueID((LvalueId) target, currentBlock, exitBlock);
+      } else if (this.target instanceof LvalueId) {
          return handleLvalueId((LvalueId) target, currentBlock, exitBlock);
       }
 
@@ -40,8 +39,7 @@ public class AssignmentStatement extends AbstractStatement {
 
       rVal = handleNull(rVal, lVal.getLlvmType(), currentBlock);
 
-      Llvm instruction = new llvm.Store(rVal.getLlvmType(), rVal.getValue(),
-          lVal.getLlvmType(), lVal.getValue());
+      Llvm instruction = new llvm.Store(rVal.getLlvmType(), rVal.getValue(), lVal.getLlvmType(), lVal.getValue());
 
       currentBlock.addInstruction(instruction);
       return currentBlock;
@@ -63,13 +61,12 @@ public class AssignmentStatement extends AbstractStatement {
       return currentBlock;
    }
 
-   public CFGNode handleRegisterBasedLvalueID(LvalueId target, 
-      CFGNode currentBlock, CFGNode exitBlock) {
-      
+   public CFGNode handleRegisterBasedLvalueID(LvalueId target, CFGNode currentBlock, CFGNode exitBlock) {
+
       Value rVal = this.source.generateInstructions(currentBlock);
       String targetName = target.getId();
       Symbol sym = Tables.getFromSymbolTable(targetName);
-      
+
       SSA.writeVariable(target.getId(), currentBlock, rVal);
 
       return currentBlock;
@@ -80,7 +77,7 @@ public class AssignmentStatement extends AbstractStatement {
          return v;
       }
 
-      leftType = leftType.substring(0, leftType.length()-1);
+      leftType = leftType.substring(0, leftType.length() - 1);
 
       return new Immediate(leftType, "null", current);
    }

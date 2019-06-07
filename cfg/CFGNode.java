@@ -14,12 +14,14 @@ public class CFGNode {
    private Label label;
    private String header;
    private boolean sealed;
+   private boolean terminal;
 
    public CFGNode() {
       this.label = new Label();
       children = new ArrayList<CFGNode>();
       instructions = new ArrayList<Llvm>();
       header = null;
+      terminal = false;
 
       preds = new ArrayList<CFGNode>();
       valueTable = new HashMap<String, Value>();
@@ -43,6 +45,10 @@ public class CFGNode {
       instructions.add(s);
    }
 
+   public void addInstruction(int i, Llvm s) {
+      instructions.add(i, s);
+   }
+
    public void sealBlock() {
       this.sealed = true;
    }
@@ -52,13 +58,22 @@ public class CFGNode {
    }
 
    public void addPred(CFGNode node) {
-      preds.add(node);
+      if(!node.isTerminal()) {
+         preds.add(node);
+      }
    }
 
    public List<CFGNode> getPreds() {
       return this.preds;
    }
 
+   public boolean isTerminal() {
+      return terminal;
+   }
+
+   public void setTerminal(boolean b) {
+      this.terminal = b;
+   }
 
    public Label getLabel() {
       return this.label;
@@ -124,4 +139,7 @@ public class CFGNode {
       System.err.println(msg);
       System.exit(1);
    }
+
+
+
 }

@@ -137,6 +137,7 @@ public class Tables {
    }
 
    private static void error(String msg) {
+      new Exception().printStackTrace();
       System.err.println(msg);
       System.exit(1);
    }

@@ -10,6 +10,14 @@ public class Ret implements Llvm {
       this.reg = reg;
    }
 
+   public String getType() {
+      return type;
+   }
+
+   public String getReg() {
+      return reg;
+   }
+
    @Override
    public String toString() {
 	   //ret i32 %u10

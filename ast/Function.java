@@ -74,26 +74,23 @@ public class Function implements Type
       CFGNode rootBlock = new CFGNode();
       CFGNode exitBlock = new CFGNode();
 
-
-      // construct exit block
-      if (this.retType.llvmType().equals("void")) {
-         exitBlock.addInstruction(new RetVoid());
-      } else {
-         String rtype = this.retType.llvmType();
-         Value reg = new Register(rtype, exitBlock);
-         exitBlock.addInstruction(new Load(reg.getValue(), rtype + "*", "%_retval_"));
-         exitBlock.addInstruction(new Ret(rtype, reg.getValue()));
-      }
-
-      //Set functions header
+      // Set functions header
       String functionDeclStr = getFunctionDeclStr();
       rootBlock.setHeader(functionDeclStr);
 
+      initRootBlock(rootBlock);
+      initExitBlock(exitBlock);
+
+      // construct exit block
+      /*
+   
       //allocate space for a return value if it is needed
       if(!this.retType.llvmType().equals("void")){
          String retInstr = "%_retval_ = alloca " + retType.llvmType();
          rootBlock.addInstruction(new llvm.Generic(retInstr));
       }
+      */
+
 
       // add instructions to the root block for various decls
       rootBlock = this.visitFunctionParams(params, rootBlock);
@@ -107,9 +104,10 @@ public class Function implements Type
       lastBlock.addInstruction(new Bru(exitBlock.getLabel().getId()));
       lastBlock.addChild(exitBlock);
       exitBlock.addPred(lastBlock);
+      Value ret = SSA.readVariable("%_retval_", exitBlock);
       
       sealCFG(rootBlock);
-
+      
       return rootBlock;
    }
 
@@ -117,8 +115,7 @@ public class Function implements Type
       
       String instruction = "define " + retType.llvmType() + " @" + this.getName() + "(";
       String specialParamStr = " %_p_";
-      if (Flags.isRegisterBased())
-      {
+      if (Flags.isRegisterBased()) {
          specialParamStr = " %";
       }
       
@@ -179,8 +176,6 @@ public class Function implements Type
       return current;
    }
 
-
-
    private CFGNode visitFunctionDecls(List<Declaration> decls, CFGNode current) {
       if (Flags.isRegisterBased()) {
          return regBasedDeclaration(decls, current);
@@ -210,6 +205,31 @@ public class Function implements Type
          if (!n.isSealed()){
             sealCFG(n);
          }
+      }
+   }
+
+   private void initExitBlock(CFGNode exitBlock) {
+      if (this.retType.llvmType().equals("void")) {
+         exitBlock.addInstruction(new RetVoid());
+      }
+      else if (Flags.isRegisterBased()) { // not retval, needs to be phi reg
+         exitBlock.addInstruction(new Ret(retType.llvmType(), "%_retval_"));
+      }
+      else {
+         String rtype = this.retType.llvmType();
+         Value reg = new Register(rtype, exitBlock);
+         exitBlock.addInstruction(new Load(reg.getValue(), rtype + "*", "%_retval_"));
+         exitBlock.addInstruction(new Ret(rtype, reg.getValue()));
+      }
+   }
+
+   private void initRootBlock(CFGNode rootBlock) {
+      if (!this.retType.llvmType().equals("void") && !Flags.isRegisterBased()) {
+         String retInstr = "%_retval_ = alloca " + retType.llvmType();
+         rootBlock.addInstruction(new llvm.Generic(retInstr));
+      }
+      else if(!this.retType.llvmType().equals("void") && Flags.isRegisterBased()) {
+         Tables.addToSymbolTable(new Symbol("%_retval_", this.retType));
       }
    }
 }
