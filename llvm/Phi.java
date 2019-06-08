@@ -53,7 +53,11 @@ public class Phi implements Llvm{
       String s = target.getValue() + " = phi " + target.getLlvmType();
 
       for (Operand o : list) {
-         s += (" [" + o.v.getValue() +", %"+ o.getBlockLabel() + "],");
+         String opVal = o.v.getValue();
+         if (o.v.getLlvmType().equals("null")) {
+            opVal = "null";
+         }
+         s += (" [" + opVal  +", %"+ o.getBlockLabel() + "],");
       }
       return s.substring(0,s.length()-1);
    }

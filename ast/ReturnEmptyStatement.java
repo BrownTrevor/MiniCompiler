@@ -24,6 +24,9 @@ public class ReturnEmptyStatement
       currentBlock.addInstruction(branch);  
       currentBlock.setTerminal(true);
 
+      currentBlock.addChild(exitBlock);
+      exitBlock.addPred(currentBlock);
+
       return currentBlock;
    }
 }

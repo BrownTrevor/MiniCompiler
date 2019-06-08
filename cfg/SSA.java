@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import cfg.CFGNode;
+import cfg.Value;
 import llvm.*;
 import globals.*;
 
@@ -28,7 +29,7 @@ public class SSA {
       Phi phi = null;
 
       String type = Tables.getFromSymbolTable(id).getType().llvmType();
-
+      
       // * if block not in sealedBlocks:
       if(!block.isSealed()){
          val = new Register(type, block); // we don't know the type until we know the type of at least one operand

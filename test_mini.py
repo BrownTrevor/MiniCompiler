@@ -18,8 +18,9 @@ for benchmark in os.listdir(directory):
          os.system("clang -m32 " + mini_path + ".out.ll  'utility.c' " +
             "-o " + exec_path)
          os.system("./" + exec_path + " < " + input_path + " > " + my_output_path)
+         print(mini_path)
          os.system("diff " + my_output_path + " " + test_output_path)
-
+         print("\n");
          #os.system("diff a.out " + mini_path + ".out.ll")
 
 

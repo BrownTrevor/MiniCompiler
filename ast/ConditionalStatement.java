@@ -51,28 +51,33 @@ public class ConditionalStatement
       CFGNode thenResBlock = this.thenBlock.generateCFG(thenBlock, exitBlock);
       CFGNode elseResBlock = this.elseBlock.generateCFG(elseBlock, exitBlock);
 
+      
       CFGNode joinBlock = new CFGNode();
       Llvm joinInstr = new Bru(joinBlock.getLabel().getId());
+      
       
       // only add if
       if (!thenResBlock.isTerminal()) {
          thenResBlock.addInstruction(joinInstr);
+         thenResBlock.addChild(joinBlock);
+         joinBlock.addPred(thenResBlock);
       } 
       
       if (!elseResBlock.isTerminal()) {
          elseResBlock.addInstruction(joinInstr);
+         elseResBlock.addChild(joinBlock);
+         joinBlock.addPred(elseResBlock);
       }   
-
-      thenResBlock.addChild(joinBlock);
-      elseResBlock.addChild(joinBlock);
 
       currentBlock.addChild(thenBlock);
       currentBlock.addChild(elseBlock);
 
       thenBlock.addPred(currentBlock);
       elseBlock.addPred(currentBlock);
-      joinBlock.addPred(thenBlock);
-      joinBlock.addPred(elseBlock);
+
+      if (elseResBlock.isTerminal() && thenResBlock.isTerminal()){
+         return elseResBlock;
+      }
 
       return joinBlock;
    }

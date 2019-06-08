@@ -101,10 +101,13 @@ public class Function implements Type
 
    
       // ensure that all paths lead to the exit block
-      lastBlock.addInstruction(new Bru(exitBlock.getLabel().getId()));
-      lastBlock.addChild(exitBlock);
-      exitBlock.addPred(lastBlock);
-      Value ret = SSA.readVariable("%_retval_", exitBlock);
+      if (!lastBlock.isTerminal()) {
+         lastBlock.addInstruction(new Bru(exitBlock.getLabel().getId()));
+         lastBlock.addChild(exitBlock);
+         exitBlock.addPred(lastBlock);
+      }
+      
+      //Value ret = SSA.readVariable("%_retval_", exitBlock);
       
       sealCFG(rootBlock);
       
@@ -163,8 +166,6 @@ public class Function implements Type
       String paramName = "%_p_" + d.getName();
 
       return new llvm.Store(paramType, paramName, localType, localName);
-      //"store %" + d.getName() + ", p_" + d.getName();
-      //store i32 %num, i32* %_P_num
    }
 
    private CFGNode regBasedDeclaration(List<Declaration> params, CFGNode current) {
@@ -213,7 +214,8 @@ public class Function implements Type
          exitBlock.addInstruction(new RetVoid());
       }
       else if (Flags.isRegisterBased()) { // not retval, needs to be phi reg
-         exitBlock.addInstruction(new Ret(retType.llvmType(), "%_retval_"));
+         Value retValue = SSA.readVariable("%_retval_", exitBlock);
+         exitBlock.addInstruction(new Ret(retValue.getLlvmType(), retValue.getValue()));
       }
       else {
          String rtype = this.retType.llvmType();
