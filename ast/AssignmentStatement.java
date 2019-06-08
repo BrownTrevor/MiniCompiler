@@ -66,6 +66,11 @@ public class AssignmentStatement extends AbstractStatement {
       Value rVal = this.source.generateInstructions(currentBlock);
       String targetName = target.getId();
       Symbol sym = Tables.getFromSymbolTable(targetName);
+      
+      if(Tables.isGlobal(targetName)) {
+         return handleLvalueId(target, currentBlock, exitBlock);
+      }
+
 
       SSA.writeVariable(target.getId(), currentBlock, rVal);
 
