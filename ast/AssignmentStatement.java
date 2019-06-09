@@ -71,7 +71,6 @@ public class AssignmentStatement extends AbstractStatement {
          return handleLvalueId(target, currentBlock, exitBlock);
       }
 
-
       SSA.writeVariable(target.getId(), currentBlock, rVal);
 
       return currentBlock;
